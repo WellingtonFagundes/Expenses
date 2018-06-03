@@ -1,0 +1,253 @@
+﻿<html>
+<head>
+    <link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="msapplication-tap-highlight" content="no">
+    <title>Control Expenses</title>
+    <!-- Favicons-->
+    <link rel="icon" href="~/Content/images/favicon/favicon-32x32.png" sizes="32x32">
+    <!-- Favicons-->
+    <link rel="apple-touch-icon-precomposed" href="~/Content/images/favicon/apple-touch-icon-152x152.png">
+    <!-- For iPhone -->
+    <meta name="msapplication-TileColor" content="#00bcd4">
+    <meta name="msapplication-TileImage" content="~/Content/images/favicon/mstile-144x144.png">
+    <!-- For Windows Phone -->
+    <!-- CORE CSS-->
+    @Styles.Render("~/Content/css/themes/fixed-menu/materialize.css")
+    @Styles.Render("~/Content/css/themes/fixed-menu/style.css")
+    <!-- Custome CSS-->
+    @Styles.Render("~/Content/css/custom/custom.css")
+    <!-- INCLUDED PLUGIN CSS ON THIS PAGE -->
+    @Styles.Render("~/Content/vendors/perfect-scrollbar/perfect-scrollbar.css")
+    @Styles.Render("~/Content/vendors/data-tables/css/jquery.dataTables.min.css")
+    @Styles.Render("~/Content/vendors/jvectormap/jquery-jvectormap.css")
+    @Styles.Render("~/Content/vendors/flag-icon/css/flag-icon.min.css")
+
+    @Styles.Render("~/Content/vendors/noUiSlider/nouislider.css")
+    @Styles.Render("~/Content/vendors/prism/prism.css")
+
+    @Styles.Render("~/Content/vendors/sweetalert/dist/sweetalert.css")
+
+    <!-- Para controle fileupload de arrastar e soltar-->
+    @Styles.Render("~/Content/vendors/dropify/css/dropify.min.css")
+
+    <!-- para controle de tabs -->
+    @Styles.Render("~/Content/css/easy-responsive-tabs.css")
+    
+    <!--Scripts--> 
+    <!--================================================ -->
+    @RenderSection("scripts",required: false)
+
+    <!-- jQuery Library -->
+    @Scripts.Render("~/Scripts/jquery-3.2.1.min.js")
+    
+    @Scripts.Render("~/Scripts/jquery.validate.min.js")
+    @Scripts.Render("~/Scripts/jquery.validate.unobtrusive.min.js")
+
+    <!-- Para biblioteca de data em português -->
+    @Scripts.Render("~/Scripts/methods_pt.js")
+
+    <!-- Para controle fileupload de arrastar e soltar-->
+    @Scripts.Render("~/Content/vendors/dropify/js/dropify.min.js")
+    @*Scripts.Render("~/Scripts/js/scripts/form-file-uploads.js")*@
+
+    @Scripts.Render("~/Scripts/jquery.maskedinput.min.js")
+
+    <!-- para tabs -->
+    @Scripts.Render("~/Scripts/js/easyResponsiveTabs.js")
+
+    
+
+    <!-- Para ajaxform e progress bar-->
+    @Scripts.Render("http://malsup.github.com/jquery.form.js")
+
+    <script>
+
+    </script>
+
+    <style type="text/css" rel="stylesheet">
+        body {
+            background: #fff;
+        }
+        #container {
+            width: 940px;
+            margin: 0 auto;
+        }
+        @@media only screen and (max-width: 768px) {
+            #container {
+                width: 90%;
+                margin: 0 auto;
+            }
+        }
+    </style>
+
+    
+</head>
+<body class="loaded" style="">
+    <!-- Start Page Loading -->
+    <div id="loader-wrapper">
+        <div id="loader"></div>
+        <div class="loader-section section-left"></div>
+        <div class="loader-section section-right"></div>
+    </div>
+    <!-- End Page Loading -->
+    <!-- //////////////////////////////////////////////////////////////////////////// -->
+    <!-- START HEADER -->
+    <header id="header" class="page-topbar">
+        <!-- start header nav-->
+        <div class="navbar-fixed">
+            <nav class="navbar-color">
+                <div class="nav-wrapper">
+                    <ul class="left">
+                        <li>
+                            <h1 class="logo-wrapper">
+                                <a href="#" class="brand-logo darken-1">
+                                    <img src="~/Content/images/logo/materialize-logo.png" alt="logo">
+                                    <span class="logo-text hide-on-med-and-down">Expenses</span>
+                                </a>
+                            </h1>
+                        </li>
+                    </ul>
+                    
+                    <ul class="right hide-on-med-and-down">
+                        
+                        <li>
+                            <a href="javascript:void(0);" class="waves-effect waves-block waves-light toggle-fullscreen">
+                                <i class="material-icons">settings_overscan</i>
+                            </a>
+                        </li>
+                        
+                        <li>
+                            <a href="javascript:void(0);" class="waves-effect waves-block waves-light profile-button" data-activates="profile-dropdown">
+                                <span class="avatar-status avatar-online">
+                                    <img src="~/Content/images/avatar/avatar-7.png" alt="Foto do Perfil">
+                                    <i></i>
+                                </span>
+                            </a><ul id="profile-dropdown" class="dropdown-content" style="white-space: nowrap; opacity: 1; left: 1156.64px; position: absolute; top: 64px; display: none;">
+                                <li>
+                                    <a href="#" class="grey-text text-darken-1">
+                                        <i class="material-icons">face</i> Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="grey-text text-darken-1">
+                                        <i class="material-icons">settings</i> Settings
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="grey-text text-darken-1">
+                                        <i class="material-icons">live_help</i> Help
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="#" class="grey-text text-darken-1">
+                                        <i class="material-icons">lock_outline</i> Lock
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" class="grey-text text-darken-1">
+                                        <i class="material-icons">keyboard_tab</i> Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#" data-activates="chat-out" class="waves-effect waves-block waves-light chat-collapse">
+                                <i class="material-icons">format_indent_increase</i>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- profile-dropdown -->
+
+                </div>
+            </nav>
+        </div>
+        <!-- end header nav-->
+    </header>
+    <!-- END HEADER -->
+    <!-- //////////////////////////////////////////////////////////////////////////// -->
+    <!-- START MAIN -->
+    <div id="main">
+        <!-- START WRAPPER -->
+        <div class="wrapper">
+            <!-- START LEFT SIDEBAR NAV-->
+           
+            @Html.Partial("~/Views/Shared/_Menu.cshtml")
+
+            <!-- END LEFT SIDEBAR NAV-->
+            <!-- //////////////////////////////////////////////////////////////////////////// -->
+            <!-- START CONTENT -->
+            <section id="content">
+                <!--start container-->
+                <div class="container">
+                    @RenderBody()
+                </div>
+                <!--end container-->
+            </section>
+            <!-- END CONTENT -->
+           
+        </div>
+        <!-- END WRAPPER -->
+    </div>
+    <!-- END MAIN -->
+    <!-- //////////////////////////////////////////////////////////////////////////// -->
+    <!-- START FOOTER -->
+    <footer class="page-footer">
+        
+        <div class="page-footer">
+            <div class="footer-copyright">
+                <div class="container">
+                    <span>
+                        Copyright ©
+                        <script type="text/javascript">
+                            document.write(new Date().getFullYear());
+                        </script><a class="grey-text text-lighten-2" href="http://themeforest.net/user/pixinvent/portfolio?ref=pixinvent" target="_blank">WSF</a> All rights reserved.
+                    </span>
+                    <span class="right hide-on-small-only"> Design and Developed by <a class="grey-text text-lighten-2" href="#">Wellington Fagundes</a></span>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- END FOOTER -->
+    <!-- ================================================
+    Scripts
+    ================================================ -->
+    <!--materialize js-->
+    @Scripts.Render("~/Scripts/js/materialize.min.js")
+    <!--prism-->
+    @Scripts.Render("~/Content/vendors/prism/prism.js")
+    <!--scrollbar-->
+    @Scripts.Render("~/Content/vendors/perfect-scrollbar/perfect-scrollbar.min.js")
+    <!-- chartjs -->
+    @Scripts.Render("~/Content/vendors/chartjs/chart.min.js")
+    <!-- sparkline -->
+    @Scripts.Render("~/Content/vendors/sparkline/jquery.sparkline.min.js")
+    <!--jvectormap-->
+    @Scripts.Render("~/Content/vendors/jvectormap/jquery-jvectormap-1.2.2.min.js")
+    @Scripts.Render("~/Content/vendors/jvectormap/jquery-jvectormap-world-mill-en.js")
+    @Scripts.Render("~/Content/vendors/jvectormap/vectormap-script.js")
+
+    <!-- data-tables -->
+    @Scripts.Render("~/Scripts/vendors/data-tables/js/jquery.dataTables.min.js")
+    
+    <!--angularjs-->
+    @Scripts.Render("~/Scripts/vendors/angular.min.js")
+
+    <!--sweetalert -->
+    @Scripts.Render("~/Scripts/vendors/sweetalert/dist/sweetalert.min.js")
+
+    <div class="jvectormap-label"></div>
+    <!--plugins.js - Some Specific JS codes for Plugin Settings-->
+    @Scripts.Render("~/Scripts/js/plugins.js")
+    <!-- Modal -->
+    @Scripts.Render("~/Scripts/js/advanced-ui-modals.js")
+    <!--custom-script.js - Add your own theme custom JS-->
+    @Scripts.Render("~/Scripts/js/custom-script.js")
+
+    <div class="hiddendiv common"></div><div class="drag-target" data-sidenav="slide-out" style="left: 0px; touch-action: pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></div><div class="drag-target" data-sidenav="chat-out" style="touch-action: pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); right: 0px;"></div>
+</body>
+</html>

@@ -1,0 +1,1486 @@
+﻿@model MLL.Vigencia
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form class="form-horizontal" id="form0" name="form0" method="post">
+
+    <div>
+        <h6 class="header2">Vigência: @Model.Data_Inicio.ToShortDateString() até @Model.Data_Final.ToShortDateString()</h6>
+
+        <div class="card-panel">
+            <div class="row" style="width:1430px">
+                <!--Vertical Tab-->
+                <div id="parentVerticalTab">
+                    <ul class="resp-tabs-list hor_1">
+                        <li class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Vigência">
+                            <i class="material-icons">account_balance</i>
+                        </li>
+                        <li class="tooltipped" onclick="CarregarReceitas()" data-position="bottom" data-delay="50" data-tooltip="Receitas">
+                            <i class="material-icons">account_balance</i>
+                        </li>
+                        <li class="tooltipped" onclick="CarregarDespesas()" data-position="bottom" data-delay="50" data-tooltip="Despesas">
+                            <i class="material-icons">account_balance</i>
+                        </li>
+                        <li class="tooltipped" onclick="CarregarCartoesCredito()" data-position="bottom" data-delay="50" data-tooltip="Cartão Crédito">
+                            <i class="material-icons">account_balance</i>
+                        </li>
+                    </ul>
+                    <div class="resp-tabs-container hor_1">
+                        
+                        <div>
+                            <div id="cadVigencia" class="col s12" style="height:700px;overflow-y:scroll">
+
+                                <h4 class="header2">Editar Vigência</h4>
+                                <form class="col s12">
+
+                                    @Html.HiddenFor(v => v.Codigo_Vigencia)
+                                    @Html.HiddenFor(v => v.Codigo_Usuario)
+
+                                    <div class="row">
+                                        <div class="col s12">
+                                            @Html.LabelFor(v => v.Data_Inicio)
+                                        </div>
+                                        <div class="input-field col s12">
+                                            @Html.EditorFor(v => v.Data_Inicio, new { @class = "validate datepicker", @autofocus = "true" })
+                                            @Html.ValidationMessageFor(v => v.Data_Inicio, null, new { @class = "help-block position-absolute" })
+                                        </div>
+                                        <div class="col s12">
+                                            @Html.LabelFor(v => v.Data_Final)
+                                        </div>
+                                        <div class="input-field col s12">
+                                            @Html.EditorFor(v => v.Data_Final, new { @class = "validate datepicker", @autofocus = "true" })
+                                            @Html.ValidationMessageFor(v => v.Data_Final, null, new { @class = "help-block position-absolute" })
+                                        </div>
+                                    </div>
+                                    <div class="row">
+
+                                        <div class="col s12">
+                                            <a id="btSalvar" class="btn waves-effect waves-light right blue" onclick="SaveCustom()">Salvar</a>
+                                            &nbsp;<a id="btCancel" class="btn waves-effect waves-light right red" onclick="CancelCustom()">Cancelar</a>
+                                        </div>
+
+                                    </div>
+                                    <br />
+                                    <br />
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div id="cadReceitas" class="col s12" style="height:700px;overflow-y:scroll">
+                                <h4 class="header2">Receitas Cadastradas</h4>
+
+                                <form class="col s12">
+                                    <div class="dataTables_wrapper" id="data-table-simple_wrapper">
+                                        <br />
+                                        <a class="waves-effect modal-trigger waves-light btn blue" href="#modalReceitas"
+                                           id="Novo" name="Novo" onclick="flagOperacao('inserir');">Novo
+                                            <i class="material-icons right">library_add</i>
+                                        </a>
+
+                                        <table class="responsive-table display dataTable" id="gridReceitas" role="grid">
+                                            <thead>
+                                                <tr role="row">
+                                                    <th style="width:250px">
+                                                        Descrição
+                                                    </th>
+                                                    <th style="width:100px">
+                                                        Valor
+                                                    </th>
+                                                    <th style="width:70px">
+                                                        Editar
+                                                    </th>
+                                                    <th style="width:70px">
+                                                        Excluir
+                                                    </th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody></tbody>
+                                        </table>
+
+                                    </div>
+                                </form>
+
+                                <div id="modalReceitas" class="modal">
+
+                                    <form name="frmCadReceitas" id="frmCadReceitas" method="post">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="header2">Dados Receita</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <!-- campo hidden do identity codigo receita-->
+                                                <input type="hidden" id="txtCodReceita" name="txtCodReceita" />
+
+                                                <!-- Campo de descrição da receita-->
+                                                <div class="input-field col s12">
+                                                    <label class="label-default">Descrição</label>
+
+                                                    <div class="input-field col s12">
+                                                        <input type="text" id="txtDescricaoReceita" name="txtDescricaoReceita" class="validate" data-val="true" data-val-required="Obrigatório" />
+                                                        <span style="color:red" class="field-validation-valid help-block position-absolute" data-valmsg-replace="true" data-valmsg-for="txtDescricaoReceita"></span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Campo de valor da receita-->
+                                                <div class="input-field col s12">
+                                                    <label class="label-default">Valor</label>
+
+                                                    <div class="input-field col s12">
+                                                        <input type="text" id="txtValorReceita" name="txtValorReceita" class="validate" data-val="true" data-val-required="Obrigatório" />
+                                                        <span style="color:red" class="field-validation-valid help-block position-absolute" data-valmsg-replace="true" data-valmsg-for="txtValorReceita"></span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- valor de código da vigência -->
+                                                <input type="hidden" id="txtCodVigenciaReceita" name="txtCodVigenciaReceita" value="@Model.Codigo_Vigencia" />
+
+                                                <!-- valor de código do usuário-->
+                                                <input type="hidden" id="txtCodUsuarioReceita" name="txtCodUsuarioReceita" value="@Session["usuarioLogadoId"]" />
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <div class="row">
+                                                    <div class="input-field col s12">
+                                                        <a id="btSalvar" class="btn waves-effect waves-light right blue" onclick="SalvarReceita()">Salvar</a>
+                                                        <a id="btnCancelarModalReceita" class="btn waves-effect waves-light red modal-close modal-action right">Fechar</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                </div>
+
+                            </div>
+                            
+                        </div>
+
+                        <div>
+                           
+                            <div id="cadDespesas" class="col s12" style="height:700px;overflow-y:scroll">
+                                <h4 class="header2">Despesas Cadastradas</h4>
+
+                                <div class="dataTables_wrapper" id="divDespesas">
+                                    <a class="btn waves-effect waves-light blue modal-trigger" href="#modalDespesas" onclick="flagOperacao('inserir')">
+                                        Novo
+                                        <i class="material-icons">library_add</i>
+                                    </a>
+
+                                    <table class="responsive-table display dataTable" id="gridDespesas" role="grid">
+                                        <thead>
+                                            <tr role="row">
+                                                <th style="width:250px">
+                                                    Descrição
+                                                </th>
+                                                <th style="width:150px">
+                                                    Valor
+                                                </th>
+                                                <th style="100px">
+                                                    Status
+                                                </th>
+                                                <th>
+                                                    Editar
+                                                </th>
+                                                <th>
+                                                    Excluir
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+
+
+                                
+                                <!-- Modal de despesas -->
+                                <div class="modal" id="modalDespesas">
+
+                                    <form id="frmCadDespesas" name="frmCadDespesas" method="post">
+
+                                        <div class="model-content">
+
+                                            <div class="modal-header">
+                                                <h4 class="header2">Dados Despesa</h4>
+                                            </div>
+
+                                            <div class="modal-body">
+
+                                                <!-- Campo de Descrição da Despesa-->
+                                                <div class="input-field col s12">
+                                                    <label class="label-default">Descrição</label>
+                                                    <div class="input-field col s12">
+                                                        <input type="text" id="txtDescricaoDespesa" class="validate" data-val-required="Obrigatório" data-val="true" />
+                                                        <span style="color:red" class="help-block position-absolute field-validation-valid" data-valmsg-for="txtDescricaoDespesa" data-valmsg-replace="true"></span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Campo de Valor da Despesa-->
+                                                <div class="input-field col s12">
+                                                    <label class="label-default">Valor</label>
+                                                    <div class="input-field col s12">
+                                                        <input type="text" id="txtValorDespesa" class="validate" data-val-required="Obrigatório" data-val="true" />
+                                                        <span style="color:red" class="help-block position-absolute field-validation-valid" data-valmsg-for="txtValorDespesa" data-valmsg-replace="true"></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="input-field col s12">
+                                                    <label class="header2">Status</label>
+                                                    <div class="input-field col s12">
+                                                        <select id="cmbStatusDespesa"></select>
+                                                        <span style="color:red" class="help-block position-absolute field-validation-valid" data-valmsg-for="cmbStatusDespesa" data-valmsg-replace="true"></span>
+                                                    </div>
+                                                </div> 
+
+                                                <div class="input-field col s12">
+                                                    <label class="label-default">Forma Pagamento</label>
+                                                    <div class="input-field col s12">
+                                                        <select id="cmbFormaPagamento"></select>
+                                                        <span style="color:red" class="help-block position-absolute field-validation-valid" data-valmsg-for="cmbFormaPagamento" data-valmsg-replace="true"></span>
+                                                    </div>
+                                                </div>
+                                                  
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                    
+                                                <div class="input-field col s12">
+                                                    <a class="btn waves-effect waves-light blue right" onclick="SalvarDespesa()" id="btnSalvarDepesa">Salvar</a>
+                                                    <a class="btn waves-effect waves-light red right modal-action modal-close">Cancelar</a>
+                                                </div>
+                                                    
+                                            </div>
+
+                                        </div>
+
+                                    </form>
+
+                                </div>
+                                
+                            </div>
+                        </div>
+
+                        <div>
+
+                            <div id="cadCartaoCredito" class="col s12">
+                                <h4 class="header2">Cartão Crédito Cadastradas</h4>
+
+
+
+                                <form class="col s12">
+
+                                    <div class="dataTables_wrapper" id="divDespesas">
+                                        <a class="btn waves-effect waves-light blue modal-trigger" href="#modalCartaoCredito" onclick="flagOperacao('inserir')">
+                                            Novo
+                                            <i class="material-icons">library_add</i>
+                                        </a>
+
+                                        <table class="responsive-table display dataTable" id="gridCartaoCredito" role="grid">
+                                            <thead>
+                                                <tr role="row">
+                                                    <th style="width:250px">
+                                                        Compra
+                                                    </th>
+                                                    <th style="width:150px">
+                                                        Valor Mês
+                                                    </th>
+                                                    <th style="width:150px">
+                                                        Parcelas
+                                                    </th>
+                                                    <th>
+                                                        Editar
+                                                    </th>
+                                                    <th>
+                                                        Excluir
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+
+                                </form>
+
+                                <div class="modal" id="modalCartaoCredito">
+
+                                    <form id="frmCadCartaoCredito" name="frmCadCartaoCredito" method="post">
+
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h4 class="header2">Dados Despesa Cartão Credito</h4>
+                                            </div>
+
+                                            <div class="modal-body">
+
+                                                <!-- Campo oculto para código da despesa de cartão de Crédito -->
+                                                <input type="hidden" id="txtCodCartaoCredito" />
+
+                                                <!-- Campo de Compra (Descrição)-->
+                                                <div class="input-field col s12">
+                                                    <label class="label-default">Compra</label>
+                                                    <div class="input-field col s12">
+                                                        <input type="text" id="txtCompra" class="validate" data-val-required="Obrigatório" data-val="true" />
+                                                        <span style="color:red" class="help-block position-absolute field-validation-valid" data-valmsg-for="txtCompra" data-valmsg-replace="true"></span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Campo de Valor da despesa do cartão-->
+                                                <div class="input-field col s12">
+                                                    <label class="label-default">Valor Mês</label>
+                                                    <div class="input-field col s12">
+                                                        <input type="text" id="txtValorMes" class="validate" data-val-required="Obrigatório" data-val="true" />
+                                                        <span style="color:red" class="help-block position-absolute field-validation-valid" data-valmsg-for="txtValorMes" data-valmsg-replace="true"></span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Campo de Parcelas do cartão-->
+                                                <div class="input-field col s12">
+                                                    <label class="label-default">Parcelas</label>
+                                                    <div class="input-field col s12">
+                                                        <input type="text" id="txtParcelas" class="validate" data-val-required="Obrigatório" data-val="true" />
+                                                        <span style="color:red" class="help-block position-absolute field-validation-valid" data-valmsg-for="txtParcelas" data-valmsg-replace="true"></span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Campo de Valor de Total-->
+                                                <div class="input-field col s12">
+                                                    <label class="label-default">Total</label>
+                                                    <div class="input-field col s12">
+                                                        <input type="text" id="txtTotal" class="validate" data-val-required="Obrigatório" data-val="true" />
+                                                        <span style="color:red" class="help-block position-absolute field-validation-valid" data-valmsg-for="txtTotal" data-valmsg-replace="true"></span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Campos hidden para vigência e usuário correntes -->
+                                                <input type="hidden" id="txtCodVigenciaCartao" />
+
+                                                <input type="hidden" id="txtCodUsuarioCartao" />
+
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <div class="row" on>
+                                                    <div class="input-field col s12">
+                                                        <a class="btn waves-effect waves-light blue right" onclick="SalvarCartao()" id="btnSalvarCartao">Salvar</a>
+                                                        <a class="btn waves-effect waves-light red right modal-action modal-close">Cancelar</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </form>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+               </div>
+          </div>
+        </div>
+     </div>
+  </form>
+
+<script>
+
+    var operacao;
+
+    $(document).ready(function () {
+
+        //Configuração Vertical Tab
+        $('#parentVerticalTab').easyResponsiveTabs({
+            type: 'vertical', //Types: default, vertical, accordion
+            width: 'auto', //auto or any width like 600px
+            fit: true, // 100% fit in a container
+            closed: 'accordion', // Start closed if in accordion view
+            tabidentify: 'hor_1', // The tab groups identifier
+            activate: function (event) { // Callback function if tab is switched
+                var $tab = $(this);
+                var $info = $('#nested-tabInfo2');
+                var $name = $('span', $info);
+                $name.text($tab.text());
+                $info.show();
+            }
+        });
+
+        //Configurações de DataTable para a Grid da aba de Receitas
+        gridReceitas = $('#gridReceitas').DataTable({
+            "language": {
+                "lengthMenu": "Mostrar _MENU_ registros por página",
+                "zeroRecords": "Nenhum registro encontrado",
+                "info": "Mostrando página _PAGE_ de _PAGES_ </br> Total: _MAX_",
+                "infoEmpty": "Não foram encontrados registros",
+                "infoFiltered": "(Filtro realizado em _MAX_ total usuários)",
+                "search": "Pesquisar",
+                "oPaginate": {
+                    "sFirst": "Primeira página",
+                    "sPrevious": "<<",
+                    "sNext": ">>",
+                    "sLast": "Última página"
+                }
+
+            }
+
+        });
+
+        //Configurações de DataTable para a Grid da aba de Cartão de Crédito
+        gridCartaoCredito = $('#gridCartaoCredito').DataTable({
+            "language": {
+                "lengthMenu": "Mostrar _MENU_ registros por página",
+                "zeroRecords": "Nenhum registro encontrado",
+                "info": "Mostrando página _PAGE_ de _PAGES_ </br> Total: _MAX_",
+                "infoEmpty": "Não foram encontrados registros",
+                "infoFiltered": "(Filtro realizado em _MAX_ total usuários)",
+                "search": "Pesquisar",
+                "oPaginate": {
+                    "sFirst": "Primeira página",
+                    "sPrevious": "<<",
+                    "sNext": ">>",
+                    "sLast": "Última página"
+                }
+
+            }
+
+        });
+
+        //Configurações de DataTable para a Grid da aba de Despesas
+        gridDespesas = $("#gridDespesas").DataTable({});
+
+
+        //Configuração do datepicker do materialize
+        $('#Data_Inicio').pickadate({
+            selectMonths: true, // Creates a dropdown to control month
+            selectYears: 15, // Creates a dropdown of 15 years to control year,
+            format: 'dd/mm/yyyy',
+
+            // Strings and translations
+            monthsFull: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+            monthsShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+            weekdaysFull: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+            weekdaysShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sabs'],
+            showMonthsShort: true,
+            showWeekdaysFull: undefined,
+            showWeekdaysShort: true,
+
+            //Buttons
+            today: 'Hoje',
+            clear: 'Limpar',
+            close: 'Ok',
+
+            // Accessibility labels
+            labelMonthNext: 'Próximo Mês',
+            labelMonthPrev: 'Mês Anterior',
+            labelMonthSelect: 'Selecione um mês',
+            labelYearSelect: 'Selecione um ano',
+
+
+            closeOnSelect: false, // Close upon selecting a date,
+            container: undefined // ex. 'body' will append picker to body
+        });
+
+
+        //Configuração do datepicker do materialize
+        $('#Data_Final').pickadate({
+            selectMonths: true, // Creates a dropdown to control month
+            selectYears: 15, // Creates a dropdown of 15 years to control year,
+            format: 'dd/mm/yyyy',
+
+            // Strings and translations
+            monthsFull: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+            monthsShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+            weekdaysFull: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+            weekdaysShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sabs'],
+            showMonthsShort: true,
+            showWeekdaysFull: undefined,
+            showWeekdaysShort: true,
+
+            //Buttons
+            today: 'Hoje',
+            clear: 'Limpar',
+            close: 'Ok',
+
+            // Accessibility labels
+            labelMonthNext: 'Próximo Mês',
+            labelMonthPrev: 'Mês Anterior',
+            labelMonthSelect: 'Selecione um mês',
+            labelYearSelect: 'Selecione um ano',
+
+
+            closeOnSelect: false, // Close upon selecting a date,
+            container: undefined // ex. 'body' will append picker to body
+        });
+
+
+        $('#modalReceitas').modal({
+            dismissible: true, // Modal can be dismissed by clicking outside of the modal
+            opacity: .5, // Opacity of modal background
+            inDuration: 300, // Transition in duration
+            outDuration: 200, // Transition out duration
+            startingTop: '4%', // Starting top style attribute
+            endingTop: '10%', // Ending top style attribute
+            ready: function (modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
+                //alert("Callback for Modal open");
+                // console.log(modal, trigger);
+
+                //alert("Operação -> " + operacao);
+
+                //se for inclusão limpar os campos de input
+                if (operacao == 'inserir') {
+                    $("#modalReceitas input").val("");
+                }
+
+
+            },
+            complete: function () { //alert('Closed'); } // Callback for Modal close
+            }
+        });
+
+        $('#modalDespesas').modal();
+        //$('#modalDespesas').modal({
+        //    dismissible: true, // Modal can be dismissed by clicking outside of the modal
+        //    opacity: .5, // Opacity of modal background
+        //    inDuration: 300, // Transition in duration
+        //    outDuration: 200, // Transition out duration
+        //    startingTop: '4%', // Starting top style attribute
+        //    endingTop: '10%', // Ending top style attribute
+        //    ready: function (modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
+        //        //alert("Callback for Modal open");
+        //        // console.log(modal, trigger);
+
+        //        //alert("Operação -> " + operacao);
+
+        //        //se for inclusão limpar os campos de input
+        //        //if (operacao == 'inserir') {
+        //        //    $('#modalDespesas input').val("");
+        //        //    alert('chamar métodos para combos');
+        //        //    //ObterStatusDespesa();
+        //        //    //ObterFormaPag();
+        //        //}
+
+
+        //    },
+        //    complete: function () { //alert('Closed'); } // Callback for Modal close
+        //    }
+        //});
+
+        $('#modalCartaoCredito').modal({
+            dismissible: true, // Modal can be dismissed by clicking outside of the modal
+            opacity: .5, // Opacity of modal background
+            inDuration: 300, // Transition in duration
+            outDuration: 200, // Transition out duration
+            startingTop: '4%', // Starting top style attribute
+            endingTop: '10%', // Ending top style attribute
+            ready: function (modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
+                //alert("Callback for Modal open");
+                // console.log(modal, trigger);
+
+            },
+            complete: function () { //alert('Closed'); } // Callback for Modal close
+            }
+        });
+
+        $("#cmbStatusDespesa").material_select();
+        
+    });
+
+    function flagOperacao(op) {
+        operacao = op;
+
+        if (operacao == 'inserir') {
+            ObterFormaPag();
+            ObterStatusDespesa();
+
+            $("#modalReceitas input").val("");
+            $("#modalDespesas input").val("");
+        }
+    }
+
+    /*
+    ===================================================================================================
+    Funções de Editar Vigência
+    ===================================================================================================
+    */
+    function CancelCustom() {
+        swal({
+            title: "Deseja cancelar o cadastro?",
+            text: "É possível cancelar o cadastramento!!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Sim",
+            cancelButtonText: "Não",
+            closeOnConfirm: false,
+            closeOnCancel: false,
+
+        },
+            function (isConfirm) {
+
+                if (isConfirm) {
+                    window.location.href = '@Url.Action("ListaVigencia","Vigencia")';
+                } else {
+                    swal("Cancelado", "Cadastramento ainda ativo!!", "error");
+                }
+            });
+    }
+
+    function SaveCustom() {
+        $("#form0").validate();
+
+        if ($("#form0").valid()) {
+
+            swal({
+            title: "Deseja atualizar a vigência?",
+            text: "É possível atualizar a vigência!!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Sim",
+            cancelButtonText: "Não",
+            closeOnConfirm: false,
+            closeOnCancel: false,
+
+        },
+            function (isConfirm) {
+
+                if (isConfirm) {
+
+                    var data = $("#form0").serialize();
+
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("EditarVigencia","Vigencia")',
+                        data: data,
+                        success: function (data) {
+                            if (!data.hasOwnProperty("erro")) {
+                                window.location.href = '@Url.Action("ListaVigencia","Vigencia")?sucesso=edita';
+                            } else {
+                                swal("Erro", "Erro ao atualizar os dados de vigência - " + data,"error");
+                            }
+                        }
+                    });
+
+                } else {
+                    swal("Cancelado", "Edição ainda ativo!!", "error");
+                }
+            });
+
+        } else {
+            swal("Alerta", "Revisar campos obrigatórios!", "warning");
+        }
+    }
+
+
+    /*
+    ===================================================================================================
+    Funções de Receitas
+    ===================================================================================================
+    */
+    function CarregarReceitas() {
+
+        var codvigencia = @Model.Codigo_Vigencia;
+        var codUsuario = @Session["usuarioLogadoId"];
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CarregarReceitas","Receita")',
+            data: { codVigencia: codvigencia, codUsuario: codUsuario },
+            dataType: "json",
+            success: function (data) {
+                DadosReceitas(data.lista);
+            },
+            error: function (xhr, ajaxOptions, throwError) {
+                alert(xhr.status);
+                alert(throwError);
+            }
+        })
+
+    }
+
+    function DadosReceitas(data) {
+
+        gridReceitas.clear().draw();
+
+        $.each(data, function (chave, valor) {
+            var btnEdita = "<a href='#modalReceitas' onclick='CarregarReceita(" + valor.Codigo_Receita + ")' style='color:black' class='modal-trigger'><i class='material-icons'>mode_edit</i></a>";
+            var btnExclui = "<a href='#' onclick='ExcluirReceita(" + valor.Codigo_Receita + ")' style='color:black'><i class='material-icons'>delete</i></a>";
+
+
+            gridReceitas.row.add([
+                valor.Descricao_Receita,
+                valor.Valor_Receita,
+                btnEdita,
+                btnExclui
+
+            ]).draw();
+
+        });
+    }
+
+    function CarregarReceita(id) {
+
+        flagOperacao('alterar');
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CarregarReceita","Receita")',
+            data: { codigo: id },
+            dataType: "json",
+            success: function (data) {
+
+                if (!data.hasOwnProperty("erro")) {
+
+                    $.each(data.lista, function (chave, valor){
+                        $("#txtCodReceita").val(valor.Codigo_Receita);
+                        $("#txtDescricaoReceita").val(valor.Descricao_Receita);
+                        $("#txtValorReceita").val(valor.Valor_Receita);
+                        $("#txtCodVigenciaReceita").val(valor.Cod_Vigencia_Receita);
+                        $("#txtCodUsuarioReceita").val(valor.Cod_Usuario_Receita);
+                    });
+
+                } else {
+                    swal("Erro", "Falha ao carregar Receita", "error");
+                }
+            }
+        });
+    }
+
+    function ExcluirReceita(id) {
+        var codReceita = id;
+
+        if (confirm("Deseja excluir a Receita?")) {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ExcluirReceita","Receita")',
+                data: { codigo: codReceita },
+                success: function (data) {
+
+                    if (data == "ok") {
+
+                        alert("Receita excluída com sucesso!!");
+
+                        CarregarReceitas();
+
+                        $('#modalReceitas').modal('close');
+
+                    } else {
+
+                        throw new Error("Erro ao excluir receita");
+                        return false;
+                    }
+                }
+            });
+
+        } else {
+            alert("Exclusão cancelada");
+            return false;
+        }
+    }
+
+    function SalvarReceita() {
+
+        $("#frmCadReceitas").validate();
+
+        if ($("#frmCadReceitas").valid()) {
+
+            if (operacao == 'inserir') {
+
+                swal({
+                    title: "Deseja inserir a receita?",
+                    text: "É possível inserir a receita!!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Sim",
+                    cancelButtonText: "Não",
+                    closeOnConfirm: false,
+                    closeOnCancel: false,
+
+                },
+                    function (isConfirm) {
+
+                        if (isConfirm) {
+
+                            var dadosReceita = [{
+                                Descricao_Receita: $("#txtDescricaoReceita").val(),
+                                Valor_Receita: $("#txtValorReceita").val(),
+                                Cod_Vigencia_Receita: $("#txtCodVigenciaReceita").val(),
+                                Cod_Usuario_Receita: $("#txtCodUsuarioReceita").val()
+
+                            }];
+
+                            $.ajax({
+                                type: "POST",
+                                url: '@Url.Action("CadastrarReceita","Receita")',
+                                data: { obj: JSON.stringify(dadosReceita) },
+                                dataType: "json",
+                                success: function (data) {
+
+                                    if (!data.hasOwnProperty("erro")) {
+
+                                        swal({
+                                            title: "Inclusão",
+                                            text: "Receita incluida com sucesso",
+                                            timer: 3000,
+                                            showConfirmButton: false
+                                        });
+
+                                        CarregarReceitas();
+
+                                        $('#modalReceitas').modal('close');
+
+                                    } else {
+
+                                        swal({
+                                            title: "Erro",
+                                            text: "Erro ao inserir",
+                                            timer: 3000,
+                                            showConfirmButton: false
+                                        });
+
+                                    }
+                                }
+                            });
+
+                        } else {
+                            swal("Cancelado", "Inclusão cancelado", "error");
+                        }
+
+                    }
+                );
+                    
+            }else if (operacao == 'alterar') {
+
+                swal({
+                    title: "Deseja inserir a receita?",
+                    text: "É possível inserir a receita!!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Sim",
+                    cancelButtonText: "Não",
+                    closeOnConfirm: false,
+                    closeOnCancel: false,
+
+                },
+                    function (isConfirm) {
+
+                        if (isConfirm) {
+
+                            var dadosReceita = [{
+                                Codigo_Receita: $("#txtCodReceita").val(),
+                                Descricao_Receita: $("#txtDescricaoReceita").val(),
+                                Valor_Receita: $("#txtValorReceita").val(),
+                                Cod_Vigencia_Receita: $("#txtCodVigenciaReceita").val(),
+                                Cod_Usuario_Receita: $("#txtCodUsuarioReceita").val()
+                            }];
+
+                            $.ajax({
+                                type: "POST",
+                                url: '@Url.Action("EditarReceita","Receita")',
+                                data: { obj: JSON.stringify(dadosReceita) },
+                                dataType: "json",
+                                success: function (data) {
+
+                                    if (!data.hasOwnProperty("erro")) {
+
+                                        swal({
+                                            title: "Atualização",
+                                            text: "Atualização da receita efetuado com sucesso",
+                                            timer: 3000,
+                                            showConfirmButton: false
+                                        });
+
+                                        CarregarReceitas();
+
+                                        $('#modalReceitas').modal('close');
+
+                                    } else {
+
+                                        swal({
+                                            title: "Erro",
+                                            text: "Erro ao atualizar",
+                                            timer: 3000,
+                                            showConfirmButton: false
+                                        });
+
+                                    }
+                                }
+
+                            });
+
+
+
+                        } else {
+                            swal("Cancelado", "Atualização cancelada", "error");
+                        }
+                    }
+                );
+
+                
+
+            }
+
+
+
+        } else {
+            swal("Alerta", "Revisar campos obrigatórios", "error");
+        }
+    }
+
+    /*
+    ===================================================================================================
+    Funções de Despesas
+    ===================================================================================================
+    */
+    function CarregarDespesas() {
+        var codVigencia = @Model.Codigo_Vigencia;
+        var codUsuario = @Session["usuarioLogadoId"];
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("DespesasCadastradas","Despesa")',
+            data: { codVigencia: codVigencia, codUser: codUsuario },
+            dataType: "json",
+            success: function (data) {
+                DadosDespesas(data.listaDespesas);
+            }
+        });
+    }
+
+    function DadosDespesas(data) {
+
+        gridDespesas.clear().draw();
+
+        $.each(data, function (chave, valor) {
+            var btnEdita = "<a href='#modalDespesas' onclick='CarregarDespesa(" + valor.Codigo_Despesa + ") style='color:black' class='modal-trigger'><i class='material-icons'>mode_edit</i></a>";
+            var btnExclui = "<a href='#' onclick='ExcluirDespesa(" + valor.Codigo_Despesa + ") style='color:black' class='modal-trigger'><i class='material-icons'>delete</i></a>";
+
+            gridDespesas.row.add([
+                valor.Descricao_Despesa,
+                valor.Valor_Despesa,
+                valor.Status_Despesa,
+                btnEdita,
+                btnExclui
+            ]).draw();
+
+
+        });
+    }
+
+    function CarregarDespesa(id) {
+
+        flagOperacao('alterar');
+        ObterStatusDespesa();
+        ObterFormaPag();
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CarregarDespesa","Despesa")',
+            data: { codDespesa: id },
+            dataType: "json",
+            success: function (data) {
+
+                if (!data.hasOwnProperty("erro")) {
+
+                    $.each(data.listaDespesa, function (chave, valor) {
+                        $("#txtCodDespesa").val(valor.Codigo_Despesa);
+                        $("#txtDescricaoDespesa").val(valor.Descricao_Despesa);
+                        $("#txtValorDespesa").val(valor.Valor_Despesa);
+                        $("#cmbStatusDespesa").val(valor.Status_Despesa);
+                        $("#cmbFormaPagamento").val(valor.Forma_Pagamento_Despesa);
+                        $("#txtCodVigenciaDespesa").val(valor.Codigo_Vigencia_Despesa);
+                        $("#txtCodUsuarioDespesa").val(valor.Codigo_Usuario_Despesa);
+                    });
+
+                } else {
+                    swal({
+                        title: "Erro",
+                        text: "Erro ao carregar despesa",
+                        type: "error",
+                        showConfirmButton: false
+                    });
+                }
+
+            }
+        })
+
+
+    }
+
+    function ExcluirDespesa(id) {
+
+        swal({
+            title: "Deseja excluir a Despesa?",
+            text: "É possível excluir a despesa!!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Sim",
+            cancelButtonText: "Não",
+            closeOnConfirm: false,
+            closeOnCancel: false,
+
+        },
+            function (isConfirm) {
+
+                if (isConfirm) {
+
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("ExcluirDespesa","Despesa")',
+                        data: { codigo: id },
+                        success: function (data) {
+
+                            if (data == "ok") {
+                                swal({
+                                    title: "Sucesso",
+                                    text: "Exclusão efetuada com sucesso!",
+                                    type: "success",
+                                    showConfirmButton: false
+                                });
+
+                                CarregarDespesas();
+
+                                $("#modalDespesas").modal("close");
+                            } else {
+                                swal("Erro", "Erro ao excluir despesa", "error");
+                            }
+                        }
+                    });
+
+
+                } else {
+                    swal("Cancelado", "Exclusão cancelada", "error");
+                }
+            }
+        );
+    }
+
+    function SalvarDespesa() {
+
+        $("#frmCadDespesas").validate();
+
+        if ($("#frmCadDespesas").valid()) {
+
+            if (operacao == 'inserir') {
+
+                swal({
+                    title: "Deseja cadastrar a Despesa?",
+                    text: "É possível cadastrar a despesa!!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Sim",
+                    cancelButtonText: "Não",
+                    closeOnConfirm: false,
+                    closeOnCancel: false,
+
+                },
+                    function (isConfirm) {
+
+                        if (isConfirm) {
+
+                            var dataDespesas = [{
+                                Descricao_Despesa: $("#txtDescricaoDespesa").val(),
+                                Valor_Despesa: $("#txtValorDespesa").val(),
+                                Status_Despesa: $("#cmbStatusDespesa").val(),
+                                Forma_Pagamento_Despesa: $("#cmbFormaPagamento").val(),
+                                Codigo_Vigencia_Despesa: @Model.Codigo_Vigencia,
+                                Codigo_Usuario_Despesa: @Session["usuarioLogadoId"]
+
+                            }];
+
+                            $.ajax({
+                                type: "POST",
+                                url: '@Url.Action("CadastrarDespesa","Despesa")',
+                                data: { obj: JSON.stringify(dataDespesas) },
+                                dataType: "json",
+                                success: function (data) {
+
+                                    if (!data.hasownProperty("erro")) {
+
+                                        swal({
+                                            title: "Sucesso",
+                                            text: "Despesa cadastrado com sucesso",
+                                            type: "success",
+                                            showConfirmButton: false
+                                        });
+
+                                        CarregarDespesas();
+
+                                        $("#modalDespesas").modal("close");
+
+
+                                    } else {
+                                        swal("Erro", "Erro ao cadastrar Despesa", "error");
+                                    }
+                                }
+                            });
+
+
+                        } else {
+                            swal("Cancelado", "Cadastro cancelado", "error");
+                        }
+                    }
+                );
+
+            } else if (operacao == 'alterar') {
+
+                swal({
+                    title: "Deseja editar a Despesa?",
+                    text: "É possível editar a despesa!!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Sim",
+                    cancelButtonText: "Não",
+                    closeOnConfirm: false,
+                    closeOnCancel: false,
+
+                },
+                    function (isConfirm) {
+
+                        if (isConfirm) {
+
+                            var dataDespesas = [{
+                                Codigo_Despesa: $("#txtCodDespesa").val(),
+                                Descricao_Despesa: $("#txtDescricaoDespesa").val(),
+                                Valor_Despesa: $("#txtValorDespesa").val(),
+                                Status_Despesa: $("#cmbStatusDespesa").val(),
+                                Forma_Pagamento_Despesa: $("#cmbFormaPagamento").val(),
+                                Codigo_Vigencia_Despesa: @Model.Codigo_Vigencia,
+                                Codigo_Usuario_Despesa: @Session["usuarioLogadoId"]
+
+                            }];
+
+                            $.ajax({
+                                type: "POST",
+                                url: '@Url.Action("EditarDespesa","Despesa")',
+                                data: { obj: JSON.stringify(dataDespesas) },
+                                dataType: "json",
+                                success: function (data) {
+
+                                    if (!data.hasOwnProperty("erro")) {
+
+                                        swal({
+                                            title: "Sucesso",
+                                            text: "Despesa atualizada com sucesso!!",
+                                            type: "success",
+                                            showConfirmButton: false
+                                        });
+
+                                        CarregarDespesas();
+
+                                        $("#modalDespesas").modal("close");
+                                    } else {
+                                        swal("Erro", "Erro ao atualizar Despesa", "error");
+                                    }
+                                }
+                            });
+
+
+                        } else {
+                            swal("Cancelado", "Edição cancelada", "error");
+                        }
+                    }
+                );
+
+            }
+
+
+
+        } else {
+            swal("Alerta", "Revisar campos obrigatórios", "warning");
+        }
+
+    }
+
+    /*
+       Preencher combo de status de Despesa
+    */
+    function ObterStatusDespesa() {
+        var data = @Html.Raw(ViewBag.StatusDespesa);
+
+        var select = $("#cmbStatusDespesa");
+        select.html("");
+
+        $.each(data.lista, function (chave, valor) {
+            select.append('<option value="' + valor.codigo + '" >' + valor.texto + '</option>');
+        });
+
+        select.material_select();
+    }
+
+
+    /*
+        Preencher combo de Forma de Pagamento
+    */
+    function ObterFormaPag() {
+        var data = @Html.Raw(ViewBag.listaFormaPag);
+
+        var select = $("#cmbFormaPagamento");
+        select.html("");
+
+        $.each(data.lista, function (chave, valor) {
+            select.append('<option value="' + valor.codigo + '" >' + valor.texto + '</option>');
+        });
+
+        select.material_select();
+    }
+
+
+    /*
+    ===================================================================================================
+    Funções de Cartao Credito
+    ===================================================================================================
+    */
+    function CarregarCartoesCredito() {
+
+        var codvigencia = @Model.Codigo_Vigencia;
+        var codUsuario = @Session["usuarioLogadoId"];
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CartoesCreditoCadastrados", "CartaoCredito")',
+            data: { codVigencia: codvigencia, codUser: codUsuario },
+            dataType: "json",
+            success: function (data) {
+                DadosCartoesCredito(data.lista);
+            },
+            error: function (xhr, ajaxOptions, throwError) {
+                alert(xhr.status);
+                alert(throwError);
+            }
+        })
+
+    }
+
+    function DadosCartoesCredito(data) {
+
+        gridCartaoCredito.clear().draw();
+
+        $.each(data, function (chave, valor) {
+            var btnEdita = "<a href='#modalCartaoCredito' onclick='CarregarCartaoCredito(" + valor.Codigo_Cartao_Credito + ")' style='color:black' class='modal-trigger'><i class='material-icons'>mode_edit</i></a>";
+            var btnExclui = "<a href='#' onclick='ExcluirCartaoCredito(" + valor.Codigo_Cartao_Credito + ")' style='color:black'><i class='material-icons'>delete</i></a>";
+
+
+            gridCartaoCredito.row.add([
+                valor.Compra,
+                valor.Valor_Mes,
+                valor.Parcelas,
+                btnEdita,
+                btnExclui
+
+            ]).draw();
+
+        });
+    }
+
+    function CarregarCartaoCredito(id) {
+
+        flagOperacao('alterar');
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("CarregarCartaoCredito","CartaoCredito")',
+            data: { codigo: id },
+            dataType: "json",
+            success: function (data) {
+
+                if (!data.hasOwnProperty("erro")) {
+
+                    $.each(data.listaCartao, function (chave, valor){
+                        $("#txtCodCartaoCredito").val(valor.Codigo_Cartao_Credito);
+                        $("#txtCompra").val(valor.Compra);
+                        $("#txtValorMes").val(valor.Valor_Mes);
+                        $("#txtParcelas").val(valor.Parcelas);
+                        $("#txtTotal").val(valor.Total);
+                        $("#txtCodVigenciaCartao").val(valor.Codigo_Vigencia_Cartao);
+                        $("#txtCodUsuarioCartao").val(valor.Codigo_Usuario_Cartao);
+                    });
+
+                } else {
+                    swal("Erro", "Falha ao carregar Cartão Credito", "error");
+                }
+            }
+        });
+    }
+
+    function ExcluirCartaoCredito(id) {
+        var codCartaoCredito = id;
+
+        if (confirm("Deseja excluir o Cartão Crédito?")) {
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ExcluirCartaoCredito","CartaoCredito")',
+                data: { codigo: codCartaoCredito },
+                success: function (data) {
+
+                    if (data == "ok") {
+
+                        alert("Cartão de Crédito excluído com sucesso!!");
+
+                        CarregarCartoesCredito();
+
+                        $('#modalCartaoCredito').modal('close');
+
+                    } else {
+
+                        throw new Error("Erro ao excluir cartão de crédito");
+                        return false;
+                    }
+                }
+            });
+
+        } else {
+            alert("Exclusão cancelada");
+            return false;
+        }
+    }
+
+    function SalvarCartao() {
+
+        $("#frmCadCartaoCredito").validate();
+
+        if ($("#frmCadCartaoCredito").valid()) {
+
+            if (operacao == 'inserir') {
+
+                swal({
+                    title: "Deseja salvar a despesa de cartão?",
+                    text: "É possível incluir a despesa de cartão!!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Sim",
+                    cancelButtonText: "Não",
+                    closeOnConfirm: false,
+                    closeOnCancel: false,
+
+                },
+                    function (isConfirm) {
+
+                        if (isConfirm) {
+
+                            var dadosCartao = [{
+                                Compra: $("#txtCompra").val(),
+                                Valor_Mes: $("#txtValorMes").val(),
+                                Parcelas: $("#txtParcelas").val(),
+                                Total: $("#txtTotal").val(),
+                                Codigo_Vigencia_Cartao: @Model.Codigo_Vigencia,
+                                Codigo_Usuario_Cartao: @Session["usuarioLogadoId"]
+                            }];
+
+                            $.ajax({
+                                type: "POST",
+                                url: '@Url.Action("SalvarCartaoCredito","CartaoCredito")',
+                                data: { obj: JSON.stringify(dadosCartao) },
+                                dataType: "json",
+                                success: function (data) {
+
+                                    if (!data.hasOwnProperty("erro")) {
+                                        swal({
+                                            title: "Sucesso",
+                                            text: "Despesa Cartão Crédito inserido com sucesso!!",
+                                            type: "success",
+                                            showConfirmButton: false,
+                                            timer: 3000
+                                        });
+
+                                        CarregarCartoesCredito();
+
+                                        $("#modalCartaoCredito").modal("close");
+                                    } else {
+                                        swal("Erro", "Erro ao incluir despesa de cartão", "error");
+                                    }
+                                }
+                            });
+
+                        } else {
+                            swal("Cancelado", "Inclusão cancelada", "error");
+                        }
+
+                    }
+                );
+
+            } else if (operacao == 'alterar') {
+
+
+                swal({
+                    title: "Deseja atualizar despesa de cartão?",
+                    text: "É possível atualizar a despesa de cartão!!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Sim",
+                    cancelButtonText: "Não",
+                    closeOnConfirm: false,
+                    closeOnCancel: false,
+
+                },
+                    function (isConfirm) {
+
+                        if (isConfirm) {
+
+                            var dadosCartao = [{
+                                Codigo_Cartao_Credito: $("#txtCodCartaoCredito").val(),
+                                Compra: $("#txtCompra").val(),
+                                Valor_Mes: $("#txtValorMes").val(),
+                                Parcelas: $("#txtParcelas").val(),
+                                Total: $("#txtTotal").val(),
+                                Codigo_Vigencia_Cartao: $("#txtCodVigenciaCartao").val(),
+                                Codigo_Usuario_Cartao: $("#txtCodUsuarioCartao").val()
+                            }];
+
+
+                            $.ajax({
+                                type: "POST",
+                                url: '@Url.Action("EditarCartaoCredito","CartaoCredito")',
+                                data: { obj: JSON.stringify(dadosCartao) },
+                                dataType: "json",
+                                success: function (data) {
+
+                                    if (!data.hasOwnProperty("erro")) {
+
+                                        swal({
+                                            title: "Sucesso",
+                                            text: "Despesa Cartão Crédito atualizado com sucesso!!",
+                                            type: "success",
+                                            showConfirmButton: false,
+                                            timer: 3000
+                                        });
+
+                                        CarregarCartoesCredito();
+
+                                        $("#modalCartaoCredito").modal("close");
+
+                                    } else {
+                                        swal("Erro", "Erro ao atualizar cartão", "error");
+                                    }
+                                }
+                            });
+
+                        } else {
+                            swal("Cancelado", "Alteração cancelada", "error");
+                        }
+                    }
+                );
+            }
+
+
+
+        } else {
+            swal("Alerta", "Revisar campos obrigatórios", "warning");
+        }
+
+    }
+
+</script>
+

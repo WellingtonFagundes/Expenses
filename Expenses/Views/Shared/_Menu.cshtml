@@ -1,0 +1,137 @@
+﻿@{ 
+
+
+}
+
+
+<aside id="left-sidebar-nav">
+    <ul id="slide-out" class="side-nav fixed leftside-navigation ps-container ps-active-y" style="transform: translateX(-100%);">
+        <li class="user-details cyan darken-2">
+            <div class="row">
+                <div class="col col s4 m4 l4">
+                    <img src="~/Content/images/avatar/avatar-7.png" alt="" class="circle responsive-img valign profile-image cyan">
+                </div>
+                <div class="col col s8 m8 l8">
+
+                    <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn" href="#" data-activates="profile-dropdown-nav">John Doe<i class="mdi-navigation-arrow-drop-down right"></i></a><ul id="profile-dropdown-nav" class="dropdown-content" style="white-space: nowrap; position: absolute; top: 59px; left: 101.234px; display: none; opacity: 1;">
+                        <li>
+                            <a href="#" class="grey-text text-darken-1">
+                                <i class="material-icons">face</i> Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="grey-text text-darken-1">
+                                <i class="material-icons">settings</i> Settings
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="grey-text text-darken-1">
+                                <i class="material-icons">live_help</i> Help
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#" class="grey-text text-darken-1">
+                                <i class="material-icons">lock_outline</i> Lock
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="grey-text text-darken-1">
+                                <i class="material-icons">keyboard_tab</i> Logout
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="user-roal">Administrator</p>
+                </div>
+            </div>
+        </li>
+
+        <!-- Menus -->
+
+        <li class="no-padding">
+            <ul class="collapsible" data-collapsible="accordion">
+                
+                <!-- Exemplo de Menu 
+                <li class="bold active">
+                    <a class="collapsible-header waves-effect waves-cyan active">
+                        <i class="material-icons">dashboard</i>
+                        <span class="nav-text">Dashboard</span>
+                    </a>
+                    <div class="collapsible-body" style="display: block;">
+                        <ul>
+                            <li>
+                                <a href="dashboard-ecommerce.html">
+                                    <i class="material-icons">keyboard_arrow_right</i>
+                                    <span>eCommerce</span>
+                                </a>
+                            </li>
+                            <li class="active">
+                                <a href="index.html">
+                                    <i class="material-icons">keyboard_arrow_right</i>
+                                    <span>Analytics</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+                    -->
+
+                <li class="bold">
+                    <a class="collapsible-header waves-effect waves-cyan">
+                        <i class="material-icons">dvr</i>
+                        <span class="nav-text">Cadastro Gerais</span>
+                    </a>
+                    <div class="collapsible-body">
+                        <ul>
+                            <li>
+                                <a href="@Url.Action("FormasPagamentoCadastrados","CadastroGeral")">
+                                    <i class="material-icons">keyboard_arrow_right</i>
+                                    <span>Forma de Pagamento</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("ListaCompras","CadastroGeral")">
+                                    <i class="material-icons">keyboard_arrow_right</i>
+                                    <span>Compras Futuras</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+
+                <li class="bold">
+                    <a href="@Url.Action("PerfisCadastrados","Perfil")" class="collapsible-header waves-effect waves-cyan">
+                        <i class="material-icons">web</i>
+                        <span class="nav-text">Perfil</span>
+                    </a>
+                </li>
+                
+                <li class="bold">
+                    <a href="@Url.Action("UsuariosCadastrados","Usuarios")" class="collapsible-header waves-effect waves-cyan">
+                        <i class="material-icons">cast</i>
+                        <span class="nav-text">Usuários</span>
+                    </a>
+                </li>
+
+                <li class="bold">
+                    <a href="@Url.Action("ListaVigencia","Vigencia")" class="collapsible-header waves-effect waves-cyan">
+                        <i class="material-icons">mail_outline</i>
+                        <span class="nav-text">Vigência</span>
+                    </a>
+                </li>
+                
+            </ul>
+        </li>
+       
+
+
+        <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 3px;"><div class="ps-scrollbar-x" style="left: 0px; width: 0px;"></div></div>
+        <div class="ps-scrollbar-y-rail" style="top: 0px; height: 528px; right: 3px;"><div class="ps-scrollbar-y" style="top: 0px; height: 201px;"></div></div>
+    </ul>
+    <a href="#" data-activates="slide-out" class="sidebar-collapse btn-floating btn-medium waves-effect waves-light hide-on-large-only">
+        <i class="material-icons">menu</i>
+    </a>
+</aside>
+
+

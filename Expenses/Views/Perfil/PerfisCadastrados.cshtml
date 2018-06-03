@@ -1,0 +1,188 @@
+﻿@model IList<MLL.Perfil>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <div class="row">
+        <div class="card-panel">
+            <h4 class="header2">Listagem Perfis</h4>
+            <br />
+            <div class="row">
+                <form class="col s12">
+
+                    <a class="btn waves-effect waves-light blue" id="novo" onclick="Novo()">
+                        Novo
+                        <i class="material-icons right">library_add</i>
+                    </a>
+
+                    <div id="data-table-simple_wrapper" class="dataTables_wrapper">
+
+                        <table class="responsive-table display dataTable" id="gridPerfis" role="grid" cellspacing="0" aria-describedby="data-table-simple_info">
+
+                            <thead>
+                                <tr role="row">
+                                    <th class="sorting_asc" aria-controls="data-table-simple" style="width:380px;" aria-sort="ascending" rowspan="1" colspan="1">
+                                        Nome
+                                    </th>
+                                    <th class="sorting" aria-controls="data-table-simple" style="width:104px;" rowspan="1" colspan="1">
+                                        Diferenciado
+                                    </th>
+                                    <th class="sorting" aria-controls="data-table-simple" style="width:104px;" rowspan="1" colspan="1">
+                                        Editar
+                                    </th>
+                                    <th class="sorting" aria-controls="data-table-simple" style="width:104px;" rowspan="1" colspan="1">
+                                        Excluir
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <tfoot>
+
+                            </tfoot>
+
+                            <tbody>
+
+                                @if (Model.Count != 0)
+                                {
+                                    foreach (MLL.Perfil per in Model)
+                                    {
+                                        <tr class="odd" role="row">
+                                            <td class="sorting_1">
+                                                @per.Nome_Perfil
+                                            </td>
+                                            <td>
+                                                <!--Alocar sim ou não-->
+                                                @per.Diferenciado
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick='Editar("@Server.UrlEncode(per.CodigoCript)")' style="color:black;"><i class="material-icons">mode_edit</i></a>
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick='Excluir("@per.Codigo_Perfil")' style="color:black"><i class="material-icons">delete</i></a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+        MostrarMensagem();
+        $('#gridPerfis').DataTable({
+            responsive: true,
+            "language": {
+                "lengthMenu": "Mostrar _MENU_ registros por página",
+                "zeroRecord": "Nenhum registro encontrado",
+                "info": "Mostrando página _PAGE_ de _PAGES_ <br> Total: _MAX_",
+                "infoEmpty": "Não foram encontrados registros",
+                "infoFiltered": "(Filtro realizado em _MAX_ total usuários",
+                "search": "Pesquisar",
+                "oPaginate": {
+                    "sFirst": "Primeira página",
+                    "sPrevious": "<<",
+                    "sNext": ">>",
+                    "sLast": "Última página"
+                }
+
+            }
+        });
+
+    });
+
+
+    function MostrarMensagem() {
+        var msg = '@Html.Raw(Request.QueryString["sucesso"])';
+
+
+        if (msg == 'cadastro') {
+            swal({
+                title: "Cadastro",
+                text: "Perfil cadastrado com sucesso",
+                type: "success",
+                timer: 4000,
+                showConfirmButton: false
+            });
+        } else if (msg == 'edita') {
+            swal({
+                title: "Edição",
+                text: "Perfil atualizado com sucesso",
+                type: "success",
+                timer: 4000,
+                showConfirmButton: false
+            });
+        } else if (msg == 'exclui') {
+            swal({
+                title: "Excluir",
+                text: "Perfil excluído com sucesso",
+                type: "success",
+                timer: 4000,
+                showConfirmButton: false
+            });
+        }
+
+    }
+
+
+    function Novo() {
+        window.location.href = '@Url.Action("CadastrarPerfil","Perfil")';
+    }
+
+    function Editar(id) {
+        window.location.href = '@Url.Action("EditarPerfil","Perfil")?codigo=' + id;
+    }
+
+    function Excluir(id) {
+
+        swal({
+            title: "Deseja excluir o perfil?",
+            text: "É possível excluir o perfil",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Sim",
+            cancelButtonText: "Não",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        },
+            function (isConfirm) {
+
+                if (isConfirm) {
+
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("ExcluirPerfil","Perfil")',
+                        data: { codigo: id },
+                        success: function (data) {
+
+                            console.log(data);
+
+                            if (data == "ok") {
+                                window.location.href = '@Url.Action("PerfisCadastrados","Perfil")?sucesso=exclui';
+                            } else {
+                                swal("Erro", "Erro ao excluir o perfil - " + data, "error");
+                            }
+                        }
+                        
+                    });
+
+                } else {
+                    swal("Cancelado", "Exclusão cancelada", "error");
+                }
+            }  
+        )
+    }
+
+
+</script>

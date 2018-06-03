@@ -1,0 +1,110 @@
+﻿@model MLL.FormaPagamento
+
+@{ 
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form class="form-horizontal" id="form0" name="form0" method="post">
+
+    <div id="basic-form" class="section">
+        <div class="row">
+                <div class="card-panel">
+                    <h4 class="header2">Cadastro Forma de Pagamento</h4>
+                    <div class="row">
+                        <form class="col s12">
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    @Html.LabelFor(f => f.Descricao_Forma_Pagamento,new { @class = "validate"})
+                                    @Html.EditorFor(f => f.Descricao_Forma_Pagamento,new { @class = "validate", @autofocus = "true"})
+                                    @Html.ValidationMessageFor(f => f.Descricao_Forma_Pagamento,null,new { @class = "help-block position-absolute"})
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="row">
+                                    <div class="input-field col s12">
+                                        <a id="btSalvar" class="btn waves-effect waves-light right blue" onclick="SaveCustom()">Salvar</a>
+                                        &nbsp;<a id="btCancel" class="btn waves-effect waves-light right blue" onclick="CancelCustom()">Cancelar</a> 
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</form>
+
+<script>
+    
+    function CancelCustom() {
+        swal({
+            title: "Deseja cancelar o cadastro?",
+            text: "É possível cancelar o cadastramento!!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Sim",
+            cancelButtonText: "Não",
+            closeOnConfirm: false,
+            closeOnCancel: false,
+
+        },
+            function (isConfirm) {
+
+                if (isConfirm) {
+                    window.location.href = '@Url.Action("FormasPagamentoCadastrados","CadastroGeral")';
+                } else {
+                    swal("Cancelado", "Cadastramento ainda ativo!!", "error");
+                }
+            });
+    }
+
+    function SaveCustom() {
+
+        $("#form0").validate();
+
+        if ($("#form0").valid()){
+
+            swal({
+                title: "Deseja salvar as informações?",
+                text: "É possível salvar a forma de pagamento",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Sim",
+                cancelButtonText: "Não",
+                closeOnConfirm: false,
+                closeOnCancel: false,
+            },
+                function (isConfirm) {
+
+                    var data = $("#form0").serialize();
+
+                    if (isConfirm) {
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("CadastrarFormaPagamento", "CadastroGeral")',
+                            data: data,
+                            dataType: 'json',
+                            success: function (data) {
+
+                                if (!data.hasOwnProperty("erro")) {
+                                    window.location.href = '@Url.Action("FormasPagamentoCadastrados","CadastroGeral")?sucesso=cadastro';
+                                } else {
+                                    swal("Erro", "Erro ao cadastrar a forma de pagamento", "error");
+                                }
+                            }
+
+                        });
+                    } else {
+                        swal("Cancelado", "Cadastro Cancelado", "error");
+                    }
+                });
+        }
+        else {
+            swal("Alerta", "Revisar campos obrigatórios", "warning");
+        }
+    }
+
+</script>

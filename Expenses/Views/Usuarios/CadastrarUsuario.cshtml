@@ -1,0 +1,190 @@
+﻿@model MLL.Usuario
+
+@{
+    
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form class="form-horizontal" id="form0" name="form0" method="post" enctype="multipart/form-data">
+
+    <div id="basic-form" class="section">
+        <div class="row">
+            <div class="card-panel">
+                <h4 class="header2">Cadastro Usuário</h4>
+                <div class="row">
+                    <form class="col s12">
+                        <div class="row">
+                            <div class="input-field col s12">
+                                @Html.LabelFor(u => u.Nome_Usuario , new { @class = "validate" })
+                                @Html.EditorFor(u => u.Nome_Usuario, new { @class = "validate", @autofocus = "true" })
+                                @Html.ValidationMessageFor(u => u.Nome_Usuario, null, new { @class = "help-block position-absolute" })
+                            </div>
+                            <div class="input-field col s12">
+                                @Html.LabelFor(u => u.Email, new { @class = "validate" })
+                                @Html.EditorFor(u => u.Email, new { @class = "validate", @autofocus = "true" })
+                                @Html.ValidationMessageFor(u => u.Email, null, new { @class = "help-block position-absolute" })
+                            </div>
+                            <div class="input-field col s12">
+                                @Html.LabelFor(u => u.Senha, new { @class = "validate" })
+                                @Html.EditorFor(u => u.Senha, new { @class = "validate", @autofocus = "true" })
+                                @Html.ValidationMessageFor(u => u.Senha, null, new { @class = "help-block position-absolute" })
+                            </div>
+                            <div class="input-field col s12">
+                                @Html.LabelFor(u => u.ConfirmaSenha, new { @class = "validate" })
+                                @Html.EditorFor(u => u.ConfirmaSenha, new { @class = "validate", @autofocus = "true" })
+                                @Html.ValidationMessageFor(u => u.ConfirmaSenha, null, new { @class = "help-block position-absolute" })
+                            </div>
+                            <div class="input-field col s12">
+                                @Html.LabelFor(u => u.Cargo, new { @class = "validate" })
+                                @Html.EditorFor(u => u.Cargo, new { @class = "validate", @autofocus = "true" })
+                                @Html.ValidationMessageFor(u => u.Cargo, null, new { @class = "help-block position-absolute" })
+                            </div>
+                        
+                            <div class="col s12">
+
+                                <!-- Switch Administrador -->
+                                <label>Administrador</label>
+                                <div class="switch">
+                                    <label>
+                                        Não
+                                        <input type="checkbox" id="chkAdministrador" name="chkAdministrador" class="validate">
+                                        <span class="lever"></span>
+                                        Sim
+                                    </label>
+                                    <span class="field-validation-valid help-block position-absolute" data-valmsg-replace="true" data-valmsg-for="chkAdministrador"></span>
+                                </div>
+
+                            </div>
+
+                            <div class="col s12">
+                                @Html.LabelFor(u => u.Perfil.Nome_Perfil, new { @class = "validate" })
+                                @Html.DropDownListFor(u => u.Codigo_Perfil, (List<SelectListItem>)ViewBag.listaPerfis,"-- Selecione o Perfil --", new { @class = "validate", @autofocus = "true" })
+                                @Html.ValidationMessageFor(u => u.Codigo_Perfil, null, new { @class = "help-block position-absolute" })
+                            </div>
+
+                            <!-- Arquivo (Path file Image) -->
+                            <div class="input-field col s10">
+                                <label class="label-default">Foto</label><br />
+                                <div class="file-field input-field">
+                                    <div class="btn">
+                                        <span>Foto</span>
+                                        <input type="file" id="flArquivoImagem" name="flArquivoImagem">
+                                    </div>
+                                    <div class="file-path-wrapper">
+                                        <input class="file-path validate" type="text" data-val="true" data-val-required="Obrigatório" />
+                                    </div>
+                                </div>
+                                <span class="field-validation-valid help-block position-absolute" data-valmsg-replace="true" data-valmsg-for="flArquivoImagem"></span>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    <a id="btSalvar" class="btn waves-effect waves-light right blue" onclick="SaveCustom()">Salvar</a>
+                                    &nbsp;<a id="btCancel" class="btn waves-effect waves-light right blue" onclick="CancelCustom()">Cancelar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<script>
+
+    function CancelCustom() {
+        swal({
+            title: "Deseja cancelar o cadastro?",
+            text: "É possível cancelar o cadastramento!!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Sim",
+            cancelButtonText: "Não",
+            closeOnConfirm: false,
+            closeOnCancel: false,
+
+        },
+            function (isConfirm) {
+
+                if (isConfirm) {
+                    window.location.href = '@Url.Action("UsuariosCadastrados","Usuarios")';
+                } else {
+                    swal("Cancelado", "Cadastramento ainda ativo!!", "error");
+                }
+            });
+    }
+
+    function SaveCustom() {
+
+        $("#form0").validate();
+
+        if ($("#form0").valid()) {
+
+                swal({
+                title: "Deseja salvar o usuário?",
+                text: "É possível salvar o usuário!!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Sim",
+                cancelButtonText: "Não",
+                closeOnConfirm: false,
+                closeOnCancel: false,
+
+                },
+                    function (isConfirm) {
+
+                        if (isConfirm) {
+
+                            var data = new FormData($("#form0")[0]);
+                            var files = $("#flArquivoImagem").get(0).files;
+
+                            if (files.length > 0) {
+                                data.append("flArquivoImagem", files[0]);
+                            } else {
+                                swal("Alerta", "Selecione uma foto para upload!!", "warning");
+                                return false;
+                            }
+
+                            var extension = $("#flArquivoImagem").val().split('.').pop().toUpperCase();
+                            if (extension != "PNG" && extension != "JPG" && extension != "GIF" && extension != "JPEG") {
+                                swal("Alerta", "Arquivo em formato inválido verificar!!");
+                                return false;
+                            }
+
+                            $.ajax({
+                                type: "POST",
+                                url: '@Url.Action("CadastrarUsuario","Usuarios")',
+                                data: data,
+                                processData: false,
+                                contentType: false,
+                                success: function (data) {
+
+                                    if (!data.hasOwnProperty("erro")) {
+                                        window.location.href = '@Url.Action("UsuariosCadastrados","Usuarios")?sucesso=cadastro';
+                                    } else {
+                                        swal("Erro", "Erro ao cadastrar o usuário", "error");
+                                    }
+                                }
+                            });
+
+                        } else {
+                            swal("Cancelado", "Cadastro de Usuário cancelado!!", "error");
+                        }
+                    }
+
+                );
+        } else {
+            swal("Alerta", "Revisar campos obrigatórios", "warning");
+        }
+
+
+    }
+
+</script>
+

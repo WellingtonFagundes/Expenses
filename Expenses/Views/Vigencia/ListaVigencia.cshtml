@@ -1,0 +1,315 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="card-panel">
+    <div class="container">
+        <div class="section">
+
+            <div id="hoverable-table">
+                <h4 class="header2">Listagem Vigência</h4>
+                <div class="row">
+                    <a href="#" class="btn waves-effect waves-light blue left" id="novo" onclick="Novo()">
+                        Novo
+                        <i class="material-icons right">library_add</i>
+                    </a>
+
+                    @*Exemplo utilizando o microsoft Ajax Unobtrusive com Nuget
+                         ========================================================================================
+                         <p>
+                            <div class="col s7">
+                                <fieldset>
+                                    @using (Ajax.BeginForm("VigenciasCadastradas", "Vigencia",new AjaxOptions { HttpMethod = "GET", InsertionMode = InsertionMode.Replace , UpdateTargetId = "divListaVigencia" }))
+                                    {
+                                        <label class="label-default">Data Inicial</label>
+                                        @Html.TextBox("datainicio")
+                                        <label class="label-default">Data Final</label>
+                                        @Html.TextBox("datafim")
+                                        <input type="submit" class="btn waves-effect waves-light blue" value="Pesquisar" />
+                                    }
+                                </fieldset>
+                            </div>
+                        </p>
+                        ======================================================================================*@
+
+                    <p>
+                        <form id="formPesquisa" name="formPesquisa">
+                            <div class="col s7">
+                                <fieldset>
+                                    <legend>Pesquisa por Período</legend>
+                                    <label class="label-default">Data Inicial</label>
+                                    <input type="text" id="txtDataInicio" name="txtDataInicio" class="datepicker" />
+                                    <label class="label-default">Data Final</label>
+                                    <input type="text" id="txtDataFim" name="txtDataFim" class="datepicker" />
+                                    <input type="submit" class="btn waves-effect waves-light blue" id="btnPesquisar" name="btnPesquisar"
+                                               value="Pesquisar" />
+                                </fieldset>
+                            </div>
+                        </form>
+                    </p>
+
+                    <form name="form0" id="form0" method="post">
+                        <div class="col s12" id="divListaVigencia" name="divListaVigencia">
+                            <table class="highlight" id="gridVigencia" name="gridVigencia">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Data Inicial</th>
+                                        <th>Data Final</th>
+                                        <th>Editar</th>
+                                        <th>Excluir</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    var gridVigencia;
+
+    $(document).ready(function () {
+
+        //Ao carregar a página de vigência listar os dados na grid com
+        //a função CarregarVigencias()
+        window.onload = CarregarVigencias();
+
+
+        MostrarMensagem();
+        $("#txtDataInicio").mask("99/99/9999");
+        $("#txtDataFim").mask("99/99/9999");
+
+        gridVigencia = $('#gridVigencia').DataTable({
+            responsive: true,
+            "language": {
+                "lengthMenu": "Mostrar _MENU_ registros por página",
+                "zeroRecord": "Nenhum registro encontrado",
+                "info": "Mostrando página _PAGE_ de _PAGES_ <br> Total: _MAX_",
+                "infoEmpty": "Não foram encontrados registros",
+                "infoFiltered": "(Filtro realizado em _MAX_ total usuários",
+                "search": "Pesquisar",
+                "oPaginate": {
+                    "sFirst": "Primeira página",
+                    "sPrevious": "<<",
+                    "sNext": ">>",
+                    "sLast": "Última página"
+                }
+
+            }
+        });
+
+
+        $('#btnPesquisar').click(function () {
+            CarregarVigencias();
+        });
+
+        $(function () {
+            $('#formPesquisa').bind('submit', function () {
+                CarregarVigencias();
+                //linha responsável por evitar o reload da página ao fazer uma pesquisa por data
+                return false;
+            });
+        });
+
+
+        //Configuração do datepicker do materialize
+        $('#txtDataInicio').pickadate({
+            selectMonths: true, // Creates a dropdown to control month
+            selectYears: 15, // Creates a dropdown of 15 years to control year,
+            format: 'dd/mm/yyyy',
+
+            // Strings and translations
+            monthsFull: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+            monthsShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+            weekdaysFull: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+            weekdaysShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sabs'],
+            showMonthsShort: true,
+            showWeekdaysFull: undefined,
+            showWeekdaysShort: true,
+
+            //Buttons
+            today: 'Hoje',
+            clear: 'Limpar',
+            close: 'Ok',
+
+            // Accessibility labels
+            labelMonthNext: 'Próximo Mês',
+            labelMonthPrev: 'Mês Anterior',
+            labelMonthSelect: 'Selecione um mês',
+            labelYearSelect: 'Selecione um ano',
+
+
+            closeOnSelect: false, // Close upon selecting a date,
+            container: undefined // ex. 'body' will append picker to body
+        });
+
+        //Configuração do datepicker do materialize
+        $('#txtDataFim').pickadate({
+            selectMonths: true, // Creates a dropdown to control month
+            selectYears: 15, // Creates a dropdown of 15 years to control year,
+            format: 'dd/mm/yyyy',
+
+            // Strings and translations
+            monthsFull: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+            monthsShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+            weekdaysFull: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+            weekdaysShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sabs'],
+            showMonthsShort: true,
+            showWeekdaysFull: undefined,
+            showWeekdaysShort: true,
+
+            //Buttons
+            today: 'Hoje',
+            clear: 'Limpar',
+            close: 'Ok',
+
+            // Accessibility labels
+            labelMonthNext: 'Próximo Mês',
+            labelMonthPrev: 'Mês Anterior',
+            labelMonthSelect: 'Selecione um mês',
+            labelYearSelect: 'Selecione um ano',
+
+
+            closeOnSelect: false, // Close upon selecting a date,
+            container: undefined // ex. 'body' will append picker to body
+        });
+
+
+    });
+
+
+    function CarregarVigencias() {
+        var dtinicio, dtfim;
+
+        dtinicio = $("#txtDataInicio").val();
+        dtfim = $("#txtDataFim").val();
+
+        $.ajax({
+             type : "POST",
+             url: '@Url.Action("VigenciasCadastradas","Vigencia")',
+             dataType: "json",
+             data: { datainicio: dtinicio, datafim: dtfim },
+             success: function (data) {
+                 DadosListar(data.lista);
+             }
+
+        });
+    }
+
+
+    function DadosListar(data) {
+        gridVigencia.clear().draw();
+
+        $.each(data, function (chave, valor) {
+      
+            var btnEdita = "<a href='#' onclick='Editar(" + valor.Codigo_Vigencia + ")' style='color:black'><i class='material-icons'>mode_edit</i></a>";
+            var btnExclui = "<a href='#' onclick='Excluir(" + valor.Codigo_Vigencia + ")' style='color:black'><i class='material-icons'>delete</i></a>";
+
+            gridVigencia.row.add([
+                valor.Codigo_Vigencia,
+                valor.Data_Inicio,
+                valor.Data_Fim,
+                btnEdita,
+                btnExclui
+            ]).draw();
+        });
+    }
+
+
+    function MostrarMensagem() {
+        var msg = '@Html.Raw(Request.QueryString["sucesso"])';
+
+
+        if (msg == 'cadastro') {
+            swal({
+                title: "Cadastro",
+                text: "Vigência cadastrada com sucesso",
+                type: "success",
+                timer: 4000,
+                showConfirmButton: false
+            });
+        } else if (msg == 'edita') {
+            swal({
+                title: "Edição",
+                text: "Vigência atualizada com sucesso",
+                type: "success",
+                timer: 4000,
+                showConfirmButton: false
+            });
+        } else if (msg == 'exclui') {
+            swal({
+                title: "Excluir",
+                text: "Vigência excluída com sucesso",
+                type: "success",
+                timer: 4000,
+                showConfirmButton: false
+            });
+        }
+
+    }
+
+
+    function Novo() {
+        window.location.href = '@Url.Action("CadastrarVigencia","Vigencia")';
+    }
+
+     function Editar(id) {
+        window.location.href = '@Url.Action("EditarVigencia","Vigencia")?codigo=' + id;
+    }
+
+    function Excluir(id) {
+
+        swal({
+            title: "Deseja excluir a Vigência?",
+            text: "É possível excluir a Vigência",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Sim",
+            cancelButtonText: "Não",
+            closeOnConfirm: false,
+            closeOnCancel: false
+
+        },
+            function (isConfirm) {
+
+                if (isConfirm) {
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("ExcluirVigencia","Vigencia")',
+                        data: { codigo: id },
+                        success: function (data) {
+
+                            if (data == "ok") {
+                                window.location.href = '@Url.Action("ListaVigencia","Vigencia")?sucesso=exclui';
+                            } else {
+                                swal("Erro", "Erro ao excluir vigência", "error");
+                            }
+                        }
+                    });
+
+                } else {
+                    swal("Cancelado", "Exclusão cancelada", "error");
+                }
+
+
+            }
+        );
+    }
+
+
+
+</script>
+

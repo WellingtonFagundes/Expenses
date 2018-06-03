@@ -1,0 +1,199 @@
+﻿@model MLL.Vigencia
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form class="form-horizontal" id="form0" name="form0" method="post">
+
+    <div id="basic-form" class="section">
+        <div class="row">
+            <div class="card-panel">
+                <h4 class="header2">Cadastro Vigência</h4>
+                <div class="row">
+                    <form class="col s12">
+                        <div class="row">
+                            <div class="col s12">
+                                @Html.LabelFor(v => v.Data_Inicio)
+                            </div>
+                            <div class="input-field col s12">                                
+                                @Html.EditorFor(v => v.Data_Inicio, new { @class = "validate datepicker", @autofocus = "true" })
+                                @Html.ValidationMessageFor(v => v.Data_Inicio, null, new { @class = "help-block position-absolute" })
+                            </div>
+
+                            <div class="col s12">
+                                @Html.LabelFor(v => v.Data_Final)
+                            </div>
+                            <div class="input-field col s12">    
+                                @Html.EditorFor(v => v.Data_Final, new { @class = "validate datepicker", @autofocus = "true" })
+                                @Html.ValidationMessageFor(v => v.Data_Final, null, new { @class = "help-block position-absolute" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="row">
+                                <div class="col s12">
+                                    <a id="btSalvar" class="btn waves-effect waves-light right blue" onclick="SaveCustom()">Salvar</a>
+                                    &nbsp;<a id="btCancel" class="btn waves-effect waves-light right red" onclick="CancelCustom()">Cancelar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<script>
+
+    $("#Data_Inicio").mask("99/99/9999");
+    $("#Data_Final").mask("99/99/9999");
+
+    $(document).ready(function () {
+
+        //Configuração do datepicker do materialize
+        $('#Data_Inicio').pickadate({
+            selectMonths: true, // Creates a dropdown to control month
+            selectYears: 15, // Creates a dropdown of 15 years to control year,
+            format: 'dd/mm/yyyy',
+
+            // Strings and translations
+            monthsFull: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+            monthsShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+            weekdaysFull: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+            weekdaysShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sabs'],
+            showMonthsShort: true,
+            showWeekdaysFull: undefined,
+            showWeekdaysShort: true,
+
+            //Buttons
+            today: 'Hoje',
+            clear: 'Limpar',
+            close: 'Ok',
+
+            // Accessibility labels
+            labelMonthNext: 'Próximo Mês',
+            labelMonthPrev: 'Mês Anterior',
+            labelMonthSelect: 'Selecione um mês',
+            labelYearSelect: 'Selecione um ano',
+
+
+            closeOnSelect: false, // Close upon selecting a date,
+            container: undefined // ex. 'body' will append picker to body
+        });
+
+
+        //Configuração do datepicker do materialize
+        $('#Data_Final').pickadate({
+            selectMonths: true, // Creates a dropdown to control month
+            selectYears: 15, // Creates a dropdown of 15 years to control year,
+            format: 'dd/mm/yyyy',
+
+            // Strings and translations
+            monthsFull: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+            monthsShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+            weekdaysFull: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+            weekdaysShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sabs'],
+            showMonthsShort: true,
+            showWeekdaysFull: undefined,
+            showWeekdaysShort: true,
+
+            //Buttons
+            today: 'Hoje',
+            clear: 'Limpar',
+            close: 'Ok',
+
+            // Accessibility labels
+            labelMonthNext: 'Próximo Mês',
+            labelMonthPrev: 'Mês Anterior',
+            labelMonthSelect: 'Selecione um mês',
+            labelYearSelect: 'Selecione um ano',
+
+
+            closeOnSelect: false, // Close upon selecting a date,
+            container: undefined // ex. 'body' will append picker to body
+        });
+    });
+
+
+    function CancelCustom() {
+        swal({
+            title: "Deseja cancelar o cadastro?",
+            text: "É possível cancelar o cadastramento!!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Sim",
+            cancelButtonText: "Não",
+            closeOnConfirm: false,
+            closeOnCancel: false,
+
+        },
+            function (isConfirm) {
+
+                if (isConfirm) {
+                    window.location.href = '@Url.Action("ListaVigencia","Vigencia")';
+                } else {
+                    swal("Cancelado", "Cadastramento ainda ativo!!", "error");
+                }
+            });
+    }
+
+    function SaveCustom() {
+
+        $("#form0").validate();
+
+        if ($("#form0").valid()) {
+            
+            swal({
+                title: "Deseja salvar o cadastro?",
+                text: "É possível salvar o cadastramento!!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Sim",
+                cancelButtonText: "Não",
+                closeOnConfirm: false,
+                closeOnCancel: false,
+
+            },
+                function (isConfirm) {
+
+                    if (isConfirm) {
+
+                        data = $("#form0").serialize();
+
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("CadastrarVigencia","Vigencia")',
+                            data: data,
+                            dataType: "json",
+                            success: function (data) {
+
+                                if (!data.hasOwnProperty("erro")) {
+                                    window.location.href = '@Url.Action("ListaVigencia","Vigencia")?sucesso=cadastro';
+                                } else {
+                                    swal("Erro", "Erro ao cadastrar a vigência", "error");
+                                }
+
+                            }
+
+                        });
+
+
+                    } else {
+                        swal("Cancelado", "Cadastro cancelado", "error");
+                    }
+                }
+
+            );
+                
+        } else {
+            swal("Alerta", "Revisar campos obrigatórios", "error");
+        }
+
+    }
+
+</script>
+

@@ -1,0 +1,759 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Bibliotecas para upload de arquivos Dropzone e nprogress -->
+@Styles.Render("~/Content/dropzone/dist/min/dropzone.min.css")
+@Styles.Render("~/Content/nprogress/nprogress.css")
+
+@Scripts.Render("~/Content/nprogress/nprogress.js")
+@Scripts.Render("~/Content/dropzone/dist/min/dropzone.min.js")
+
+
+<form name="form0" id="form0" method="POST" class="form-horizontal">
+    <div>
+        <!-- Início do CARD -->
+        <div class="card-panel">
+            <h4 class="header2">Listagem Compras Futuras</h4>
+            <br />
+            <a class="btn waves-effect waves-light blue modal-trigger" href="#modalCompra" id="novo" onclick="flagOperacao('inserir');">
+                Novo
+                <i class="material-icons right">library_add</i>
+            </a>
+
+            <div class="row">
+                
+                <div id="data-table-simple_wrapper" class="dataTables_wrapper">
+
+                    <table class="responsive-table display dataTable" id="gridComprasFuturas" role="grid" cellspacing="0" aria-describedby="data-table-simple_info">
+
+                        <thead>
+                            <tr role="row">
+                                <th class="sorting_asc" aria-controls="data-table-simple" style="width:380px;" aria-sort="ascending" rowspan="1" colspan="1">
+                                    Descrição
+                                </th>
+                                <th class="sorting" aria-controls="data-table-simple" style="width:210px;" aria-sort="ascending" rowspan="1" colspan="1">
+                                    Status
+                                </th>
+                                <th class="sorting" aria-controls="data-table-simple" style="width:84px;" rowspan="1" colspan="1">
+                                    Editar
+                                </th>
+                                <th class="sorting" aria-controls="data-table-simple" style="width:84px;" rowspan="1" colspan="1">
+                                    Excluir
+                                </th>
+                                <th class="sorting" aria-controls="data-table-simple" style="width:84px;" rowspan="1" colspan="1">
+                                    Imagem
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody></tbody>
+
+                    </table>
+                </div>
+
+                <!-- Div modal de cadastro compra -->
+                <div id="modalCompra" class="modal bottom-sheet">
+                    
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="header2">Dados Compra Futura</h4>
+                        </div>
+
+                        <div class="modal-body">
+
+                            <!-- Campo hidden para o código de compra -->
+                            <input type="hidden" id="txtCodCompra" name="txtCodCompra" />
+
+                            <!-- Campo hidden para o código do usuário -->
+                            <input type="hidden" id="txtCodUsuario" name="txtCodUsuario" value="@Session["usuarioLogadoID"]" />
+
+                            <!-- Descrição Compra -->
+                            <div class="input-field col s12">
+                                <label class="label-default">Descrição</label>
+
+                                <div class="input-field col s12">
+                                    <input type="text" id="txtDescricaoCompra" name="txtDescricaoCompra" class="validate" data-val="true" data-val-required="Obrigatório" />
+                                    <span style="color:red" class="field-validation-valid help-block position-absolute" data-valmsg-replace="true" data-valmsg-for="txtDescricaoCompra"></span>
+                                </div>
+                            </div>
+
+                            <!-- Valor Compra -->
+                            <div class="input-field col s12">
+                                <label class="label-default">Valor</label>
+
+                                <div class="input-field col s12">
+                                    <input type="text" id="txtValorCompra" name="txtValorCompra" class="validate" data-val="true" data-val-required="Obrigatório" />
+                                    <span style="color:red" class="field-validation-valid help-block position-absolute" data-valmsg-replace="true" data-valmsg-for="txtValorCompra"></span>
+                                </div>
+                            </div>
+
+                            <!-- Status -->
+                            <div class="input-field col s12">
+                                <label class="label-default">Status</label>
+
+                                <div class="input-field col s12">
+                                    <select id="cmbStatusCompra" name="cmbStatusCompra" class="validate" data-val="true" data-val-required="Obrigatório"></select>
+                                    <span style="color:red" class="field-validation-valid help-block position-absolute" data-valmsg-replace="true" data-valmsg-for="cmbStatusCompra"></span>
+                                </div>
+                            </div>
+
+                            <!-- URL -->
+                            <div class="input-field col s12">
+                                <label class="label-default">URL</label>
+
+                                <div class="input-field col s12">
+                                    <input type="text" id="txtURL" name="txtURL" class="validate" data-val="true" data-val-required="Obrigatório" />
+                                    <span style="color:red" class="field-validation-valid help-block position-absolute" data-valmsg-replace="true" data-valmsg-for="txtURL"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <!-- Botões -->
+                            <div class="row" on>
+                                <div class="input-field col s12">
+                                    <a id="btSalvar" class="btn waves-effect waves-light right blue" onclick="SalvarCompra();">Salvar</a>
+                                    <a id="BtCancelarModalCertificado" class="btn waves-effect waves-light red right modal-action modal-close">Fechar</a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                </div>
+
+
+            </div>
+
+        </div>
+     </div>
+
+
+</form>
+
+
+<!-- Div modal Salvar imagem da compra -->
+<div id="modalArqCompra" class="modal">
+
+    <div class="row">
+
+        <div class="col s12">
+            <div class="card-panel">
+                <h4 class="header2">Upload Imagem</h4>
+
+                <!-- Div para exibir ou esconder o link pra download
+                <div style="display:none" id="divDownload">
+                    <center><a href="@Url.Action("DownloadCertificado", "Cadastro")" id="downloadcertificado" name="downloadcertificado">Download Certificado</a></center>
+                </div>
+                    -->
+
+                <div class="row">
+                    <form class="col s12 dropzone" id="frmUploadImagem" method="post" action="@Url.Action("FileUploadImagem", "CadastroGeral")" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <!-- hidden que armazenará o id da compra selecionado-->
+                                <input type="hidden" id="idCompra" name="idCompra" />
+
+                                <div class="fallback">
+                                    <input id="fileArquivoImagem" name="file" type="file" />
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="row">
+                    <div class="input-field col s12">
+                        <button class="btn cyan waves-effect waves-light right" type="submit" name="btnUpload" onclick="UploadImagem()">
+                            Upload
+                            <i class="material-icons right">cloud_upload</i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<!-- Div modal carregar imagem da compra -->
+<div id="modalVisualizarImagem" class="modal">
+
+    <div class="row">
+
+        <div class="col s12">
+            <div class="card-panel">
+                <h4 class="header2">Imagem</h4>
+
+                <div class="row">
+                    <form class="col s12" id="frmUploadMostrarImagem" method="post">
+                        <div class="row">
+                            <input type="hidden" id="idcompra" name="idcompra" />
+
+                            <img id="Tela" name="Tela" />
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+        
+<script>
+
+    var operacao;
+    var gridComprasFuturas;
+
+    /*Configuração rotinas do dropzone para upload de imagem
+    **************************************************************************************************
+    */
+    var dropzone;
+    Dropzone.options.frmUploadImagem = {
+        dictDefaultMessage: "Arraste e solte, ou clique para escolher a imagem",
+        maxFilesize: 10, //MB
+        uploadMultiple: false,
+        maxFiles: 1,
+        acceptedFiles: '.png',
+        //acceptedFiles: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        //acceptedFiles: 'application/vnd.ms-excel',
+        dictInvalidFileType: 'Arquivo no formato inválido!!!',
+        addRemoveLinks: true,
+
+        dictRemoveFile: 'Remover arquivo',
+        autoProcessQueue: false,
+        init: function () {
+            dropzone = this;
+        },
+        maxfilesexceeded: function (file) {
+            this.removeFile(file);
+            swal("Upload", "Só é possível adicionar uma imagem", "warning");
+        },
+        complete: function (file) {
+            dropzone.removeFile(file)
+
+        },
+        success: function (file, response) {
+            var obj = JSON.parse(response);
+
+            if (!obj.hasOwnProperty("erro")) {
+
+                swal({
+                    title: "Upload Sucesso",
+                    text: "Upload realizado com sucesso!!",
+                    type: "success",
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+
+                CarregarCompras();
+
+                $('#modalArqCompra').modal('close');
+
+            } else {
+                swal("Upload Erro", "Erro:" + obj.erro, "error");
+            }
+
+        }
+    }
+
+    function UploadImagem() {
+        if (dropzone.getQueuedFiles().length == 0) {
+            swal("Upload", "Inserir o arquivo de upload", "warning");
+            return;
+        }
+
+        swal({
+            title: "Deseja fazer o upload do arquivo",
+            text: "Caso queira fazer o upload da imagem!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Sim!",
+            cancelButtonText: "Não!",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        },
+            function (isConfirm) {
+                if (isConfirm) {
+                    dropzone.processQueue();
+                }
+                else {
+                    swal("Cancelado", "Upload cancelado :)", "error");
+                }
+            });
+    }
+
+    function CarregarArquivoCompra(id) {
+        
+        //Atribui o código para o campo hidden de código de compra para atualizar o id com o arquivo na base
+        $("#frmUploadImagem").find("#idCompra").val(id);
+
+    }
+
+    function CarregarImagem(id) {
+
+        $.ajax({
+
+            url: '@Url.Action("BuscarCaminhoImagem","CadastroGeral")',
+            type: "POST",
+            data: { codCompra: id },
+            dataType: "json",
+            success: function (dados) {
+
+                if (!dados.hasOwnProperty("vazio")) {
+                   
+                    DadoImagem(dados.listaCaminho);
+                }
+                            },
+            error: function (xhr, ajaxOptions, throwError) {
+                alert(xhr.status);
+                alert(throwError);
+            }
+        })
+    }
+
+    function DadoImagem(dados) {
+
+        $.each(dados, function (chave, valor) {
+            alert("Momento de adicionar à propriedade src da imagem - " + valor.Caminho_Imagem);
+
+            $("#frmUploadMostrarImagem").find("#Tela").attr("src",valor.Caminho_Imagem);
+        });
+    }
+
+
+
+    $(document).ready(function () {
+        //Ao carregar a página de compras futuras listar os dados na grid com
+        //a função CarregarCompras()
+        window.onload = CarregarCompras();
+
+        MostrarMensagem();
+        gridComprasFuturas = $('#gridComprasFuturas').DataTable({
+            responsive: true,
+            "language": {
+                "lengthMenu": "Mostrar _MENU_ registros por página",
+                "zeroRecord": "Nenhum registro encontrado",
+                "info": "Mostrando página _PAGE_ de _PAGES_ <br> Total: _MAX_",
+                "infoEmpty": "Não foram encontrados registros",
+                "infoFiltered": "(Filtro realizado em _MAX_ total usuários",
+                "search": "Pesquisar",
+                "oPaginate": {
+                    "sFirst": "Primeira página",
+                    "sPrevious": "<<",
+                    "sNext": ">>",
+                    "sLast": "Última página"
+                }
+
+            }
+        });
+
+
+        $('#modalCompra').modal({
+            dismissible: true, // Modal can be dismissed by clicking outside of the modal
+            opacity: .5, // Opacity of modal background
+            inDuration: 300, // Transition in duration
+            outDuration: 200, // Transition out duration
+            startingTop: '4%', // Starting top style attribute
+            endingTop: '10%', // Ending top style attribute
+            ready: function (modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
+                //alert("Callback for Modal open");
+               // console.log(modal, trigger);
+
+            },
+            complete: function () { //alert('Closed'); } // Callback for Modal close
+            }
+         });
+
+    });
+
+    function flagOperacao(op) {
+
+        operacao = op;
+
+        if (operacao == 'inserir') {
+            $("#modalCompra input").val("");
+            ObterStatus();
+        }
+
+        $("#txtCodUsuario").val(@Session["usuarioLogadoID"]);
+
+    }
+
+    function MostrarMensagem() {
+        var msg = '@Html.Raw(Request.QueryString["sucesso"])';
+
+
+        if (msg == 'cadastro') {
+            swal({
+                title: "Cadastro",
+                text: "Compra futura cadastrado com sucesso",
+                type: "success",
+                timer: 4000,
+                showConfirmButton: false
+            });
+        } else if (msg == 'edita') {
+            swal({
+                title: "Edição",
+                text: "Compra futura atualizado com sucesso",
+                type: "success",
+                timer: 4000,
+                showConfirmButton: false
+            });
+        } else if (msg == 'exclui') {
+            swal({
+                title: "Excluir",
+                text: "Compra futura excluído com sucesso",
+                type: "success",
+                timer: 4000,
+                showConfirmButton: false
+            });
+        }
+
+    }
+
+
+    function CarregarCompras() {
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("ComprasFuturasCadastradasPorUsuario", "CadastroGeral")',
+           // data: { codusuario: codusu },
+            dataType: "json",
+            success: function (dados) {
+                DadosCompras(dados.lista);
+            },
+            error: function (xhr, ajaxOptions, throwError) {
+                alert(xhr.Status);
+                alert(throwError);
+            }
+        });
+    }
+
+    //Carrega os dados de compras futuras
+    function DadosCompras(dados) {
+
+        gridComprasFuturas.clear().draw();
+
+        $.each(dados, function (chave, valor) {
+
+            var btnEdita = "<a href='#modalCompra' onclick='CarregarCompra(" + valor.Codigo_Compra + ")' style='color:black;' class='modal-trigger'><i class='material-icons'>mode_edit</i></a>";
+            var btnExclui = "<a href='#' onclick='ExcluirCompra(" + valor.Codigo_Compra + ")' style='color:black;'><i class='material-icons'>delete</i></a>";
+            var btnArquivo;
+
+            if ((valor.Path_Image == "") || (valor.Path_Image == null)) {
+                btnArquivo = "<a href='#modalArqCompra' onclick='CarregarArquivoCompra(" + valor.Codigo_Compra + ")' style='color: black;' class='modal-trigger'><i class='material-icons'>file_upload</i></a>";
+            } else {
+                btnArquivo = "<a href='#modalVisualizarImagem' onclick='CarregarImagem(" + valor.Codigo_Compra + ")' style='color: black;' class='modal-trigger' data-position='bottom' data-delay='50'><i class='material-icons'>done</i></a>";
+            }
+
+            gridComprasFuturas.row.add([
+                valor.Descricao_Compra,
+                valor.Status,
+                btnEdita,
+                btnExclui,
+                btnArquivo
+
+            ]).draw();
+        });
+    }
+
+
+    function ObterStatus() {
+
+        var data = @Html.Raw(ViewBag.listaStatus);
+
+        var select = $("#cmbStatusCompra");
+        select.html("");
+
+       // console.log(select);
+        console.log(data);
+
+        $.each(data.lista, function (chave, valor) {
+
+            select.append('<option value="' + valor.codigo + '"   >' + valor.texto + '</option>');
+        });
+
+        select.material_select();
+    }
+
+
+
+     function SalvarCompra() {
+        var dadosCompra;
+
+        $("#form0").validate();
+
+        if ($("#form0").valid()) {
+
+            if (operacao == 'inserir') {
+                swal({
+                    title: "Deseja cadastrar a Compra?",
+                    text: "Você pode cadastrar a Compra!!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Sim",
+                    cancelButtonText: "Não",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                },
+                    function (isConfirm) {
+                        if (isConfirm) {
+
+                            var dadosCompra = [];
+
+                            dadosCompra.push({
+                                Descricao_Compra: $("#txtDescricaoCompra").val(),
+                                Valor_Compra: $("#txtValorCompra").val(),
+                                Status: $("#cmbStatusCompra").val(),
+                                URL: $("#txtURL").val(),
+                                Codigo_Usuario: $("#txtCodUsuario").val()
+                            });
+
+                            var consulta = $.ajax({
+                                type: "POST",
+                                url: '@Url.Action("CadastrarCompraFutura", "CadastroGeral")',
+
+                                data: { obj: JSON.stringify(dadosCompra) },
+                                dataType: "json",
+                                complete: function (data) {
+                                    // console.log(data);
+                                },
+                                error: function (er) {
+
+                                }
+                            });
+
+                            $.when(consulta).done(function (dados) {
+
+
+                                if (!dados.hasOwnProperty("erro")) {
+
+                                    swal({
+                                        title: "Inclusão!",
+                                        text: "Compra inserida com sucesso!",
+                                        type: "success",
+                                        timer: 3000,
+                                        showConfirmButton: false
+                                    });
+
+                                    CarregarCompras();
+                                    $('#modalCompra').modal('close');
+
+
+                                } else {
+
+                                    swal({
+                                        title: "Erro ao Inserir!",
+                                        text: "Erro:" + dados.erro,
+                                        type: "error",
+                                        timer: 3000,
+                                        showConfirmButton: false
+                                    });
+
+                                }
+
+                            });
+                        }
+                        else {
+                            swal("Cancelado!", "Cadastro Cancelado!", "error");
+                        }
+                    });
+            }
+
+            if (operacao == 'alterar') {
+
+                swal({
+                    title: "Deseja atualizar a Compra?",
+                    text: "Você pode atualizar a Compra!!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Sim",
+                    cancelButtonText: "Não",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                },
+                    function (isConfirm) {
+                        if (isConfirm) {
+
+                           dadosCompra = [{
+                                Codigo_Compra: $("#txtCodCompra").val(),
+                                Descricao_Compra: $("#txtDescricaoCompra").val(),
+                                Valor_Compra: $("#txtValorCompra").val(),
+                                Status: $("#cmbStatusCompra").val(),
+                                URL: $("#txtURL").val(),
+                                Codigo_Usuario: $("#txtCodUsuario").val()
+                            }];
+
+                            var consulta = $.ajax({
+                                type: "POST",
+                                url: '@Url.Action("EditarComprasFuturas", "CadastroGeral")',
+
+                                data: {
+                                    obj: JSON.stringify(dadosCompra)
+                                },
+
+                                dataType: "json",
+
+                            });
+
+                            $.when(consulta).done(function (dados) {
+
+
+                                if (!dados.hasOwnProperty("erro")) {
+
+                                    swal({
+                                        title: "Atualizar!",
+                                        text: "Compra atualizada com sucesso!",
+                                        type: "success",
+                                        timer: 3000,
+                                        showConfirmButton: false
+                                    });
+
+                                    CarregarCompras();
+
+                                    $('#modalCompra').modal('close');
+
+
+                                } else {
+
+                                    swal({
+                                        title: "Erro ao Atualizar!",
+                                        text: "Erro:" + dados.erro,
+                                        type: "error",
+                                        timer: 3000,
+                                        showConfirmButton: false
+                                    });
+
+                                }
+
+                            });
+                        }
+                        else {
+                            swal("Cancelado!", "Atualização Cancelada!", "error");
+                        }
+
+
+                    });
+
+            }
+
+        } else {
+            swal("Validação!", "Verifique se os valores foram informados", "error");
+        }
+
+
+    }
+
+    //Carrega uma compra para alterar
+    function CarregarCompra(id) {
+
+        flagOperacao('alterar');
+
+        ObterStatus();
+
+        //Carrega os dados da compra selecionada
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("ObterCompra", "CadastroGeral")',
+
+            data: {
+                codigo: id
+            },
+            dataType: 'json',
+            success: function (data) {
+
+              if (!data.hasOwnProperty("erro")) {
+
+                console.log(data);
+
+                $.each(data.listacompras, function (chave, valor) {
+
+                    $("#txtCodCompra").val(valor.Codigo_Compra);
+                    $("#txtDescricaoCompra").val(valor.Descricao_Compra);
+                    $("#txtValorCompra").val(valor.Valor_Compra);
+
+                    $("#cmbStatusCompra").val(valor.Status);
+                    $("#cmbStatusCompra").material_select();
+
+
+                    $("#txtURL").val(valor.URL);
+                    $("#txtCodUsuario").val(valor.Codigo_Usuario);
+
+                    });
+                } else {
+                    swal("Erro Compra!", "Erro ao carregar compra!", "error");
+                }
+
+            }
+        });
+
+    }
+
+
+    function ExcluirCompra(id) {
+        var codCompra = id;
+
+        swal({
+                title: "Deseja excluir a Compra?",
+                text: "Você pode excluir a Compra!!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Sim",
+                cancelButtonText: "Não",
+                closeOnConfirm: false,
+                closeOnCancel: false
+            },
+                function (isConfirm) {
+                    if (isConfirm) {
+
+                       $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("ExcluirCompraFutura", "CadastroGeral")',
+
+                            data: {
+                                codigo: codCompra
+                            },
+                            //dataType: 'json',
+                            success: function (data) {
+
+                                if (data == "ok") {
+                                    swal({
+                                        title: "Exclusão!",
+                                        text: "Compra excluída com sucesso!",
+                                        type: "success",
+                                        timer: 3000,
+                                        showConfirmButton: false
+                                    });
+
+                                    CarregarCompras();
+
+                                } else {
+                                    swal("Erro!", "Erro ao excluir a Compra: " + data, "error");
+                                }
+                            }
+                        });
+                    }
+                    else {
+                        swal("Cancelado!", "Exclusão Cancelada!", "error");
+                    }
+            });
+
+
+    }
+
+                </script>

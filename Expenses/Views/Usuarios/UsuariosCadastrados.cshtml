@@ -1,0 +1,200 @@
+﻿@model IList<MLL.Usuario>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+    <div class="row">
+        <div class="card-panel">
+            <h4 class="header2">Listagem Usuários</h4>
+            <br />
+            <div class="row">
+                <form class="col s12">
+
+                    <a class="btn waves-effect waves-light blue" id="novo" onclick="Novo()">
+                        Novo
+                        <i class="material-icons right">library_add</i>
+                    </a>
+
+                    <div id="data-table-simple_wrapper" class="dataTables_wrapper">
+
+                        <table class="responsive-table display dataTable" id="gridUsuarios" role="grid" cellspacing="0" aria-describedby="data-table-simple_info">
+
+                            <thead>
+                                <tr role="row">
+                                    <th class="sorting_asc" aria-controls="data-table-simple" style="width:180px;" aria-sort="ascending" rowspan="1" colspan="1">
+                                        Nome Usuário
+                                    </th>
+                                    <th class="sorting" aria-controls="data-table-simple" style="width:104px;" rowspan="1" colspan="1">
+                                        Email
+                                    </th>
+                                    <th class="sorting" aria-controls="data-table-simple" style="width:104px;" rowspan="1" colspan="1">
+                                        Cargo
+                                    </th>
+                                    <th class="sorting" aria-controls="data-table-simple" style="width:104px;" rowspan="1" colspan="1">
+                                        Perfil
+                                    </th>
+                                    <th class="sorting" aria-controls="data-table-simple" style="width:104px;" rowspan="1" colspan="1">
+                                        Editar
+                                    </th>
+                                    <th class="sorting" aria-controls="data-table-simple" style="width:104px;" rowspan="1" colspan="1">
+                                        Excluir
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <tfoot>
+
+                            </tfoot>
+
+                            <tbody>
+
+                                @if (Model.Count != 0)
+                                {
+                                    foreach (MLL.Usuario usu in Model)
+                                    {
+                                        <tr class="odd" role="row">
+                                            <td class="sorting_1">
+                                                @usu.Nome_Usuario
+                                            </td>
+                                            <td>
+                                                @usu.Email
+                                            </td>
+                                            <td>
+                                                @usu.Cargo
+                                            </td>
+                                            <td>
+                                                @usu.Perfil.Nome_Perfil
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick='Editar("@Server.UrlEncode(usu.idcriptografado)")' style="color:black;"><i class="material-icons">mode_edit</i></a>
+                                            </td>
+                                            <td>
+                                                <a href="#" onclick='Excluir("@usu.Codigo_Usuario")' style="color:black"><i class="material-icons">delete</i></a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+        MostrarMensagem();
+        $('#gridUsuarios').DataTable({
+            responsive: true,
+            "language": {
+                "lengthMenu": "Mostrar _MENU_ registros por página",
+                "zeroRecord": "Nenhum registro encontrado",
+                "info": "Mostrando página _PAGE_ de _PAGES_ <br> Total: _MAX_",
+                "infoEmpty": "Não foram encontrados registros",
+                "infoFiltered": "(Filtro realizado em _MAX_ total usuários",
+                "search": "Pesquisar",
+                "oPaginate": {
+                    "sFirst": "Primeira página",
+                    "sPrevious": "<<",
+                    "sNext": ">>",
+                    "sLast": "Última página"
+                }
+
+            }
+        });
+
+    });
+
+
+    function MostrarMensagem() {
+        var msg = '@Html.Raw(Request.QueryString["sucesso"])';
+
+
+        if (msg == 'cadastro') {
+            swal({
+                title: "Cadastro",
+                text: "Usuário cadastrado com sucesso",
+                type: "success",
+                timer: 4000,
+                showConfirmButton: false
+            });
+        } else if (msg == 'edita') {
+            swal({
+                title: "Edição",
+                text: "Usuário atualizado com sucesso",
+                type: "success",
+                timer: 4000,
+                showConfirmButton: false
+            });
+        } else if (msg == 'exclui') {
+            swal({
+                title: "Excluir",
+                text: "Usuário excluído com sucesso",
+                type: "success",
+                timer: 4000,
+                showConfirmButton: false
+            });
+        }
+
+    }
+
+
+    function Novo() {
+        window.location.href = '@Url.Action("CadastrarUsuario","Usuarios")';
+    }
+
+    function Editar(id) {
+        window.location.href = '@Url.Action("EditarUsuario","Usuarios")?codigo=' + id;
+    }
+
+    function Excluir(id) {
+
+        swal({
+            title: "Deseja excluir o Usuário?",
+            text: "É possível excluir o Usuário",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Sim",
+            cancelButtonText: "Não",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        },
+            function (isConfirm) {
+
+                if (isConfirm) {
+
+                    if (@Session["usuarioLogadoID"] == id) {
+                        swal("Erro", "Não é possível excluir o usuário que já está logado no momento", "error");
+                        return false;
+                    }
+
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("ExcluirUsuario","Usuarios")',
+                        data: { codigo: id },
+                        success: function (data) {
+
+                            if (data == "ok") {
+                                window.location.href = '@Url.Action("UsuariosCadastrados","Usuarios")?sucesso=exclui';
+                            } else {
+                                swal("Erro", "Erro ao excluir usuário - " + data, "error");
+                            }
+                        }
+
+                    });
+                } else {
+                    swal("Cancelado", "Exclusão cancelada", "error");
+                }
+            }
+        );
+    }
+
+</script>

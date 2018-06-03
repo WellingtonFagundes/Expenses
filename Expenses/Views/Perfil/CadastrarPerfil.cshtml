@@ -1,0 +1,132 @@
+﻿@model MLL.Perfil
+
+@{
+    ViewBag.Title = "CadastrarPerfil";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form class="form-horizontal" id="form0" name="form0" method="post">
+
+    <div id="basic-form" class="section">
+        <div class="row">
+            <div class="card-panel">
+                <h4 class="header2">Cadastro Perfil</h4>
+                <div class="row">
+                    <form class="col s12">
+                        <div class="row">
+                            <div class="input-field col s12">
+                                @Html.LabelFor(p => p.Nome_Perfil, new { @class = "validate" })
+                                @Html.EditorFor(p => p.Nome_Perfil, new { @class = "validate", @autofocus = "true" })
+                                @Html.ValidationMessageFor(p => p.Nome_Perfil, null, new { @class = "help-block position-absolute" })
+                            </div>
+                            <div class="col s12">
+                                
+                                <!-- Switch Diferenciado -->
+                                <label>Diferenciado</label>
+                                <div class="switch">
+                                    <label>
+                                        Não
+                                        <input type="checkbox" id="chkDiferenciado" name="chkDiferenciado" class="validate">
+                                        <span class="lever"></span>
+                                        Sim
+                                    </label>
+                                    <span class="field-validation-valid help-block position-absolute" data-valmsg-replace="true" data-valmsg-for="chkDiferenciado"></span>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    <a id="btSalvar" class="btn waves-effect waves-light right blue" onclick="SaveCustom()">Salvar</a>
+                                    &nbsp;<a id="btCancel" class="btn waves-effect waves-light right blue" onclick="CancelCustom()">Cancelar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<script>
+
+    function CancelCustom() {
+        swal({
+            title: "Deseja cancelar o cadastro?",
+            text: "É possível cancelar o cadastramento!!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Sim",
+            cancelButtonText: "Não",
+            closeOnConfirm: false,
+            closeOnCancel: false,
+
+        },
+            function (isConfirm) {
+
+                if (isConfirm) {
+                    window.location.href = '@Url.Action("PerfisCadastrados","Perfil")';
+                } else {
+                    swal("Cancelado", "Cadastramento ainda ativo!!", "error");
+                }
+            });
+    }
+
+    function SaveCustom() {
+
+        $("#form0").validate();
+
+        if ($("#form0").valid()) {
+
+            swal({
+                title: "Deseja Salvar o perfil?",
+                text: "É possível cadastrar o perfil!!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Sim",
+                cancelButtonText: "Não",
+                closeOnConfirm: false,
+                closeOnCancel: false,
+            }, 
+                function (isConfirm) {
+
+                    if (isConfirm) {
+
+                        dados = $("#form0").serialize();
+
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("CadastrarPerfil","Perfil")',
+                            data: dados,
+                            dataType: "json",
+                            success: function (data) {
+
+                                if (!data.hasOwnProperty("erro")) {
+                                    window.location.href = '@Url.Action("PerfisCadastrados","Perfil")?sucesso=cadastro';
+                                } else {
+                                    swal("Erro", "Erro ao cadastrar perfil", "error");
+                                }
+                            }
+                        });
+
+                    } else {
+                        swal("Cancelado", "Cadastramento cancelado", "error");
+                    }
+                }
+            
+            );
+
+
+        } else {
+            swal("Validação", "Campos obrigatórios verificar", "error");
+        }
+
+    }
+
+ </script>
+

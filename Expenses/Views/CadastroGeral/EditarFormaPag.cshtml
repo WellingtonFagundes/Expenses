@@ -1,0 +1,125 @@
+﻿@model MLL.FormaPagamento
+
+@{
+    ViewBag.Title = "EditarFormaPag";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form class="form-horizontal" id="form0" name="form0" method="post">
+
+    <div id="basic-form" class="section">
+        <div class="row">
+            <div class="card-panel">
+                <h4 class="header2">Editar Forma de Pagamento</h4>
+                <div class="row">
+                    <form class="col s12">
+
+                        @Html.HiddenFor(f => f.Codigo_Forma_Pagamento)
+
+                        <div class="row">
+                            <div class="input-field col s12">
+                                @Html.LabelFor(f => f.Descricao_Forma_Pagamento, new { @class = "validate" })
+                                @Html.EditorFor(f => f.Descricao_Forma_Pagamento, new { @class = "validate", @autofocus = "true" })
+                                @Html.ValidationMessageFor(f => f.Descricao_Forma_Pagamento, null, new { @class = "help-block position-absolute" })
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="row">
+                                <div class="input-field col s12">
+                                    <a id="btSalvar" class="btn waves-effect waves-light right blue" onclick="SaveCustom()">Salvar</a>
+                                    &nbsp;<a id="btCancel" class="btn waves-effect waves-light right blue" onclick="CancelCustom()">Cancelar</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<script>
+
+ 
+
+    function CancelCustom() {
+
+        swal({
+            title: "Deseja cancelar a edição?",
+            text: "É possível cancelar a edição de um registro!!",
+            showCancelButton: true,
+            type: "warning",
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Sim",
+            cancelButtonText: "Não",
+            closeOnConfirm: false,
+            closeOnCancel: false,
+
+        },
+            function (isConfirm) {
+
+                if (isConfirm) {
+
+                    window.location.href = '@Url.Action("FormasPagamentoCadastrados","CadastroGeral")';
+
+                } else {
+                    swal("Cancelado", "Edição cancelada", "error");
+                }
+            }
+
+        );
+    }
+
+
+    function SaveCustom() {
+
+        $("#form0").validate();
+
+        if ($("#form0").valid()) {
+
+            swal({
+                title: "Deseja editar o registro?",
+                text: "É possível editar a forma de Pagamento",
+                showCancelButton: true,
+                type: "warning",
+                confirmButtonColor: "#DD6B44",
+                confirmButtonText: "Sim",
+                cancelButtonText: "Não",
+                closeOnConfirm: false,
+                closeOnCancel: false,
+            },
+                function (isConfirm) {
+
+                    if (isConfirm) {
+
+                        var data = $("#form0").serialize();
+
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("EditarFormaPag","CadastroGeral")',
+                            data: data,
+                            dataType: "json",
+                            success: function (data) {
+                                if (!data.hasOwnProperty("erro")) {
+
+                                    window.location.href = '@Url.Action("FormasPagamentoCadastrados","CadastroGeral")?sucesso=edita';
+                                } else {
+                                    swal("Erro", "Erro ao editar a forma de Pagamento", "error");
+                                }
+                            }
+                        });
+
+                    } else {
+                        swal("Cancelado", "Edição cancelada", "error");
+                    }
+                }
+
+            );
+
+        } else {
+            swal("Advertindo", "Revisar campos obrigatórios", "error");
+        }
+
+    }
+</script>

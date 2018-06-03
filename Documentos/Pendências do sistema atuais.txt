@@ -1,0 +1,35 @@
+﻿Pendências do sistema Expenses atuais
+=====================================================================================================================
+
+- Na tela de Dados de Despesa está deixando abrir a pergunta para salvar mesmo deixando campos vazios
+
+- Verificar click no botão login pressionando fora do nome
+
+- Verificar como exibir mensagem de usuário ou senha inválida no login
+
+- Ao logar verificar o Signout das sessions criadas ao logar
+
+- Criar Profile de Login ao logar
+
+- Criar tela de esqueceu a senha
+
+- Na tela de criação do Usuário verificar rotina referente a gravação da imagem na pasta
+
+Tela de edição de usuário
+	- a propriedade path_image está trazendo nulo
+	  
+Tela de cadastro de usuário sem logon
+	- acertar gravação de arquivo na pasta física do servidor e caminho relativo na base
+
+Tela Listagem Compras Futuras
+	- acertar na edição do modal a formatação de valor quando edita ou cadastra
+	- tirar alert quando carrega imagem
+
+Tela Listagem de Perfis
+	- Acertar o valor do campo Diferenciado para sim ou não
+
+Acertar um tempo maior para a sessão do usuário
+
+Criar cards informativos e possíveis gráficos na HOME do sistema
+
+Se possível criar accordions com as permissões específicas definidas por Perfil
