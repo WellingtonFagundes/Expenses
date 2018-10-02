@@ -17,7 +17,6 @@ namespace DAL.Mapeamento
 
             Property(x => x.Codigo_Perfil).HasColumnName("PER_CODIGO");
             Property(x => x.Nome_Perfil).HasColumnName("PER_NOME");
-            Property(x => x.Diferenciado).HasColumnName("PER_DIFERENCIADO");
 
         }
     }

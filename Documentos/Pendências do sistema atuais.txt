@@ -1,6 +1,21 @@
 ﻿Pendências do sistema Expenses atuais
 =====================================================================================================================
 
+- Efetuar modificações nas telas de Compras Futuras, Despesas que sofreram modificações pela alteração
+  para adicionar um produto
+
+- Se der criar um botão na tela de Compras Futuras para tornar a compra futura uma nova despesa
+  dentro de uma vigência e excluir a compra futura da tabela TB_COMPRA_FUTURA
+
+- Quando subir no servidor de internet talvez da nuvem, mudar quando salva a imagem o servidor com o número de IP
+  ou site se precisar
+
+- Ao criar usuário administrador acertar caminho de imagem padrão
+
+- Ao alterar o cargo do usuário ele não modifica na base
+
+- No menu de permissões, criar tela que faça a manutenção das tabelas de Regras e UsuáriosRegras
+
 - Na tela de Dados de Despesa está deixando abrir a pergunta para salvar mesmo deixando campos vazios
 
 - Verificar click no botão login pressionando fora do nome
@@ -12,8 +27,6 @@
 - Criar Profile de Login ao logar
 
 - Criar tela de esqueceu a senha
-
-- Na tela de criação do Usuário verificar rotina referente a gravação da imagem na pasta
 
 Tela de edição de usuário
 	- a propriedade path_image está trazendo nulo
@@ -28,8 +41,10 @@ Tela Listagem Compras Futuras
 Tela Listagem de Perfis
 	- Acertar o valor do campo Diferenciado para sim ou não
 
-Acertar um tempo maior para a sessão do usuário
+Acertar um tempo maior para a sessão do usuário ou permanente como o facebook
 
 Criar cards informativos e possíveis gráficos na HOME do sistema
 
 Se possível criar accordions com as permissões específicas definidas por Perfil
+
+Hospedar na web a aplicação com domínio próprio ou na nuvem

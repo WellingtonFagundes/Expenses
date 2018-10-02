@@ -1,0 +1,693 @@
+﻿
+@{
+    ViewBag.Title = "ListaProdutos";
+}
+<!-- Bibliotecas para upload de arquivos Dropzone e nprogress -->
+@Styles.Render("~/Content/dropzone/dist/min/dropzone.min.css")
+@Styles.Render("~/Content/nprogress/nprogress.css")
+
+@Scripts.Render("~/Content/nprogress/nprogress.js")
+@Scripts.Render("~/Content/dropzone/dist/min/dropzone.min.js")
+
+
+<form name="form0" id="form0" method="POST" class="form-horizontal">
+    <div>
+        <!-- Início do CARD -->
+        <div class="card-panel">
+            <h4 class="header2">Listagem Produtos</h4>
+            <br />
+            <a class="btn waves-effect waves-light blue modal-trigger" href="#modalProduto" id="novo" onclick="flagOperacao('inserir')">
+                Novo
+                <i class="material-icons right">library_add</i>
+            </a>
+
+            <div class="row">
+
+                <div id="data-table-simple_wrapper" class="dataTables_wrapper">
+
+                    <table class="responsive-table display dataTable" id="gridProdutos" role="grid" cellspacing="0" aria-describedby="data-table-simple_info">
+
+                        <thead>
+                            <tr role="row">
+                                <th class="sorting_asc" aria-controls="data-table-simple" style="width:380px;" aria-sort="ascending" rowspan="1" colspan="1">
+                                    Descrição
+                                </th>
+                                <th class="sorting" aria-controls="data-table-simple" style="width:210px;" aria-sort="ascending" rowspan="1" colspan="1">
+                                    Valor
+                                </th>
+                                <th class="sorting" aria-controls="data-table-simple" style="width:84px;" rowspan="1" colspan="1">
+                                    Editar
+                                </th>
+                                <th class="sorting" aria-controls="data-table-simple" style="width:84px;" rowspan="1" colspan="1">
+                                    Excluir
+                                </th>
+                                <th class="sorting" aria-controls="data-table-simple" style="width:84px;" rowspan="1" colspan="1">
+                                    Imagem
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody></tbody>
+
+                    </table>
+                </div>
+
+                <!-- Div modal de cadastro produto -->
+                <div id="modalProduto" class="modal bottom-sheet">
+
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="header2">Dados Produto</h4>
+                        </div>
+
+                        <div class="modal-body">
+
+                            <!-- Campo hidden para o código de produto -->
+                            <input type="hidden" id="txtCodProduto" name="txtCodProduto" />
+
+                            <!-- Campo hidden para o código do usuário -->
+                            <input type="hidden" id="txtCodUsuario" name="txtCodUsuario" value="@Session["usuarioLogadoID"]" />
+
+                            <!-- Descrição Produto -->
+                            <div class="input-field col s12">
+                                <label class="label-default">Descrição</label>
+
+                                <div class="input-field col s12">
+                                    <input type="text" id="txtDescricaoProduto" name="txtDescricaoProduto" class="validate" data-val="true" data-val-required="Obrigatório" />
+                                    <span style="color:red" class="field-validation-valid help-block position-absolute" data-valmsg-replace="true" data-valmsg-for="txtDescricaoProduto"></span>
+                                </div>
+                            </div>
+
+                            <!-- Valor Produto -->
+                            <div class="input-field col s12">
+                                <label class="label-default">Valor</label>
+
+                                <div class="input-field col s12">
+                                    <input type="text" id="txtValorProduto" name="txtValorProduto" class="validate" data-val="true" data-val-required="Obrigatório" />
+                                    <span style="color:red" class="field-validation-valid help-block position-absolute" data-valmsg-replace="true" data-valmsg-for="txtValorProduto"></span>
+                                </div>
+                            </div>
+
+                            <!-- URL -->
+                            <div class="input-field col s12">
+                                <label class="label-default">URL</label>
+
+                                <div class="input-field col s12">
+                                    <input type="text" id="txtURL" name="txtURL" class="validate" data-val="true" data-val-required="Obrigatório" />
+                                    <span style="color:red" class="field-validation-valid help-block position-absolute" data-valmsg-replace="true" data-valmsg-for="txtURL"></span>
+                                </div>
+
+                                <!-- Hiddens para armazenar caminho e nome do arquivo de imagem caso exista-->
+                                <input type="hidden" id="txtPathImage" name="txtPathImage" />
+                                <input type="hidden" id="txtArquivoImage" name="txtArquivoImage" />
+
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <!-- Botões -->
+                            <div class="row" on>
+                                <div class="input-field col s12">
+                                    <a id="btSalvar" class="btn waves-effect waves-light right blue" onclick="SalvarProduto();">Salvar</a>
+                                    <a id="BtCancelarModalProduto" class="btn waves-effect waves-light red right modal-action modal-close">Fechar</a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+
+
+</form>
+
+
+<!-- Div modal Salvar imagem do produto -->
+<div id="modalArqProduto" class="modal">
+
+    <div class="row">
+
+        <div class="col s12">
+            <div class="card-panel">
+                <h4 class="header2">Upload Imagem</h4>
+
+                <div class="row">
+                    <form class="col s12 dropzone" id="frmUploadImagem" method="post" action="@Url.Action("FileUploadImagem", "Produto")" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <!-- hidden que armazenará o id do produto selecionado-->
+                                <input type="hidden" id="idProduto" name="idProduto" />
+
+                                <div class="fallback">
+                                    <input id="fileArquivoImagem" name="file" type="file" />
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="row">
+                    <div class="input-field col s12">
+                        <button class="btn cyan waves-effect waves-light right" type="submit" name="btnUpload" onclick="UploadImagem()">
+                            Upload
+                            <i class="material-icons right">cloud_upload</i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<!-- Div modal carregar imagem do produto -->
+<div id="modalVisualizarImagem" class="modal">
+
+    <div class="row">
+
+        <div class="col s12">
+            <div class="card-panel">
+                <h4 class="header2">Imagem</h4>
+
+                <div class="row">
+                    <form class="col s12" id="frmUploadMostrarImagem" method="post">
+                        <div class="row">
+                            <input type="hidden" id="idProduto" name="idProduto" />
+
+                            <img id="Tela" name="Tela" />
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<script>
+    var operacao;
+    var gridProdutos;
+
+    /*Configuração rotinas do dropzone para upload de imagem
+    **************************************************************************************************
+    */
+    var dropzone;
+    Dropzone.options.frmUploadImagem = {
+        dictDefaultMessage: "Arraste e solte, ou clique para escolher a imagem",
+        maxFilesize: 10, //MB
+        uploadMultiple: false,
+        maxFiles: 1,
+        acceptedFiles: '.png',
+        //acceptedFiles: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        //acceptedFiles: 'application/vnd.ms-excel',
+        dictInvalidFileType: 'Arquivo no formato inválido!!!',
+        addRemoveLinks: true,
+
+        dictRemoveFile: 'Remover arquivo',
+        autoProcessQueue: false,
+        init: function () {
+            dropzone = this;
+        },
+        maxfilesexceeded: function (file) {
+            this.removeFile(file);
+            swal("Upload", "Só é possível adicionar uma imagem", "warning");
+        },
+        complete: function (file) {
+            dropzone.removeFile(file)
+
+        },
+        success: function (file, response) {
+            var obj = JSON.parse(response);
+
+            if (!obj.hasOwnProperty("erro")) {
+
+                swal({
+                    title: "Upload Sucesso",
+                    text: "Upload realizado com sucesso!!",
+                    type: "success",
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+
+                CarregarProdutos();
+
+                $('#modalArqProduto').modal('close');
+
+            } else {
+                swal("Upload Erro", "Erro:" + obj.erro, "error");
+            }
+
+        }
+    }
+
+
+    function UploadImagem() {
+        if (dropzone.getQueuedFiles().length == 0) {
+            swal("Upload", "Inserir o arquivo de upload", "warning");
+            return;
+        }
+
+        swal({
+            title: "Deseja fazer o upload do arquivo",
+            text: "Caso queira fazer o upload da imagem!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Sim!",
+            cancelButtonText: "Não!",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        },
+            function (isConfirm) {
+                if (isConfirm) {
+                    dropzone.processQueue();
+                }
+                else {
+                    swal("Cancelado", "Upload cancelado :)", "error");
+                }
+            });
+    }
+
+    function CarregarArquivoProduto(id) {
+
+        $("#frmUploadImagem").find("#idProduto").val(id);
+    }
+
+    function CarregarImagem(id) {
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("BuscarCaminhoImagem","Produto")',
+            data: { codprod: id },
+            dataType: 'json',
+            success: function (dados) {
+
+                if (!dados.hasOwnProperty("vazio")) {
+                    DadoImagem(dados.listacaminho)
+                }
+            }
+
+        });
+
+
+    }
+
+    function flagOperacao(op) {
+
+        operacao = op;
+
+        if (operacao == 'inserir') {
+            $("#modalProduto input").val("");
+        }
+
+        $("#txtCodUsuario").val(@Session["usuarioLogadoID"]);
+
+    }
+
+    function DadoImagem(dados) {
+
+        $.each(dados, function (chave, valor) {
+            $("#frmUploadMostrarImagem").find("#Tela").attr("src", valor.Caminho_Imagem);
+        });
+    }
+
+    $(document).ready(function () {
+        //Ao carregar a página de produtos listar os dados na grid com
+        //a função CarregarProdutos()
+        window.onload = CarregarProdutos();
+
+        MostrarMensagem();
+        gridProdutos = $('#gridProdutos').DataTable({
+            responsive: true,
+            "language": {
+                "lengthMenu": "Mostrar _MENU_ registros por página",
+                "zeroRecord": "Nenhum registro encontrado",
+                "info": "Mostrando página _PAGE_ de _PAGES_ <br> Total: _MAX_",
+                "infoEmpty": "Não foram encontrados registros",
+                "infoFiltered": "(Filtro realizado em _MAX_ total usuários",
+                "search": "Pesquisar",
+                "oPaginate": {
+                    "sFirst": "Primeira página",
+                    "sPrevious": "<<",
+                    "sNext": ">>",
+                    "sLast": "Última página"
+                }
+
+            }
+        });
+
+        $('#modalProduto').modal({
+            dismissible: true, // Modal can be dismissed by clicking outside of the modal
+            opacity: .5, // Opacity of modal background
+            inDuration: 300, // Transition in duration
+            outDuration: 200, // Transition out duration
+            startingTop: '4%', // Starting top style attribute
+            endingTop: '10%', // Ending top style attribute
+            ready: function (modal, trigger) { // Callback for Modal open. Modal and trigger parameters available.
+                //alert("Callback for Modal open");
+                // console.log(modal, trigger);
+
+            },
+            complete: function () { //alert('Closed'); } // Callback for Modal close
+            }
+        });
+
+       
+    });
+  
+
+    function MostrarMensagem() {
+        var msg = '@Html.Raw(Request.QueryString["sucesso"])';
+
+
+        if (msg == 'cadastro') {
+            swal({
+                title: "Cadastro",
+                text: "Compra futura cadastrado com sucesso",
+                type: "success",
+                timer: 4000,
+                showConfirmButton: false
+            });
+        } else if (msg == 'edita') {
+            swal({
+                title: "Edição",
+                text: "Compra futura atualizado com sucesso",
+                type: "success",
+                timer: 4000,
+                showConfirmButton: false
+            });
+        } else if (msg == 'exclui') {
+            swal({
+                title: "Excluir",
+                text: "Compra futura excluído com sucesso",
+                type: "success",
+                timer: 4000,
+                showConfirmButton: false
+            });
+        }
+
+    }
+
+    
+    function CarregarProdutos() {
+
+        $.ajax({
+            url: '@Url.Action("ProdutosCadastradosPorUsuario","Produto")',
+            type: 'POST',
+            dataType: 'json',
+            success: function (dados) {
+                DadosProdutos(dados.lista);
+            },
+            error: function (xhr, ajaxOptions, throwError) {
+                alert(xhr.status);
+                alert(throwError);
+            }
+
+        });
+    }    
+
+    function DadosProdutos(dados) {
+
+        gridProdutos.clear().draw();
+
+        $.each(dados, function (chave, valor) {
+            var btnEdita = "<a href='#modalProduto' onclick='CarregarProduto(" + valor.Codigo_Produto + ")' style='color:black;' class='modal-trigger'><i class='material-icons'>mode_edit</i></a>";
+            var btnExclui = "<a href='#' onclick='ExcluirProduto(" + valor.Codigo_Produto + ")' style='color:black;'><i class='material-icons'>delete</i></a>";
+            var btnArquivo;
+
+            if (valor.Path_Image == "" || valor.Path_Image == null) {
+                btnArquivo = "<a href='#modalArqProduto' onclick='CarregarArquivoProduto(" + valor.Codigo_Produto + ")' style='color:black;'class='modal-trigger'><i class='material-icons'>file_upload</i></a>";
+            } else {
+                btnArquivo = "<a href='#modalVisualizarImagem' onclick='CarregarImagem(" + valor.Codigo_Produto + ")' style='color:black;' class='modal-trigger' data-position='bottom' data-delay='50'><i class='material-icons'>done</i></a>";
+            }
+
+            gridProdutos.row.add([
+                valor.Descricao_Produto,
+                valor.Valor_Produto,
+                btnEdita,
+                btnExclui,
+                btnArquivo
+            ]).draw();
+        });
+    }
+
+    function SalvarProduto() {
+
+        var dadosProduto;
+
+        $("#form0").validate();
+
+        if ($("#form0").valid()) {
+
+            if (operacao == 'inserir') {
+
+                swal({
+                    title: 'Deseja cadastrar um novo produto?',
+                    text: 'Você pode cadastrar um novo produto!!',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Sim",
+                    cancelButtonText: "Não",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                },
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            dadosProduto = [];
+
+                            dadosProduto.push({
+                                Descricao_Produto: $("#txtDescricaoProduto").val(),
+                                Valor_Produto: $("#txtValorProduto").val(),
+                                Url: $("#txtURL").val(),
+                                Cod_Usu: $("#txtCodUsuario").val()
+                            });
+
+                            var consulta = $.ajax({
+                                type: 'POST',
+                                url: '@Url.Action("CadastrarProduto","Produto")',
+                                dataType: 'json',
+                                data: { obj: JSON.stringify(dadosProduto) },
+                                complete: function (data) {
+
+                                },
+                                error: function (er) {
+
+                                }
+                            });
+
+                            $.when(consulta).done(function (dados) {
+
+                                if (!dados.hasOwnProperty("erro")) {
+                                    swal({
+                                        title: 'Inclusão',
+                                        text: 'Inclusão efetuado com sucesso',
+                                        type: 'success',
+                                        timer: 3000,
+                                        showConfirmButton: false
+                                    });
+
+                                    CarregarProdutos();
+
+                                    $("#modalProduto").modal('close');
+
+                                } else {
+
+                                    swal({
+                                        title: 'Erro ao inserir',
+                                        text: 'Erro - ' + dados.erro,
+                                        type: 'error',
+                                        timer: 3000,
+                                        showConfirmButton: false
+                                    });
+
+                                }
+                            });
+                        } else {
+                            swal("Cancelado", "Inclusão Cancelado", "error");
+                        }
+                    }
+
+                );
+
+            }
+
+            if (operacao == 'alterar') {
+
+                swal({
+                    title: 'Deseja alterar um produto?',
+                    text: 'Você pode atualizar um produto!!',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Sim",
+                    cancelButtonText: "Não",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                },
+                    function (isConfirm) {
+                        if (isConfirm) {
+
+                            dadosProduto = [{
+                                Codigo_Produto: $("#txtCodProduto").val(),
+                                Descricao_Produto: $("#txtDescricaoProduto").val(),
+                                Valor_Produto: $("#txtValorProduto").val(),
+                                Url: $("#txtURL").val(),
+                                Path_Image: $("#txtPathImage").val(),
+                                Arquivo_Image: $("#txtArquivoImage").val(),
+                                Cod_Usu: $("#txtCodUsuario").val()
+                            }];
+
+                            $.ajax({
+                                type: 'POST',
+                                url: '@Url.Action("EditarProduto","Produto")',
+                                data: { obj: JSON.stringify(dadosProduto) },
+                                dataType: 'json',
+                                success: function (dados) {
+
+                                    if (!dados.hasOwnProperty("erro")) {
+
+                                        swal({
+                                            title: 'Atualização',
+                                            text: 'Dados atualizados com sucesso',
+                                            timer: 3000,
+                                            showConfirmButton: false,
+                                            type: 'success'
+                                        });
+
+                                        CarregarProdutos();
+
+                                        $("#modalProduto").modal('close');
+
+                                    } else {
+
+                                        swal({
+                                            title: 'Erro ao atualizar',
+                                            text: 'Erro - ' + dados.erro,
+                                            type: 'error',
+                                            timer: 3000,
+                                            showConfirmButton: false
+                                        });
+                                    }
+                                }
+
+                            });
+
+                        } else {
+                            swal("Cancelado", "Alteração cancelada", "error");
+                        }
+
+                    }
+
+                );
+
+            }
+
+        } else {
+            swal("Validação", "Verifique os dados se foram informados corretamente", "error");
+        }
+    }
+
+
+    function CarregarProduto(id) {
+        flagOperacao('alterar');
+
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("ObterProduto","Produto")',
+            data: { codigo: id },
+            dataType: 'json',
+            success: function (dados) {
+
+                if (!dados.hasOwnProperty("erro")) {
+
+                    $.each(dados.listaProduto, function (chave, valor) {
+
+                        $("#txtCodProduto").val(valor.Codigo_Produto);
+                        $("#txtDescricaoProduto").val(valor.Descricao_Produto);
+                        $("#txtValorProduto").val(valor.Valor_Produto);
+                        $("#txtURL").val(valor.Url);
+                        $("#txtPathImage").val(valor.Path_Image);
+                        $("#txtArquivoImage").val(valor.Arquivo_Image);
+                        $("#txtCodUsuario").val(valor.Cod_Usu);
+                    });
+
+                } else {
+                    swal("Erro", "Erro ao carregar compra", "error");
+                }
+            },
+            error: function (xhr, ajaxOptions, throwError) {
+                alert(xhr.status);
+                alert(throwError);
+            }
+        });
+    }
+
+
+    function ExcluirProduto(id) {
+
+        swal({
+            title: 'Excluir Produto',
+            text: 'Deseja excluir o produto?',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Sim",
+            cancelButtonText: "Não",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        },
+            function (isConfirm) {
+                if (isConfirm) {
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("ExcluirProduto","Produto")',
+                        data: { codprod: id },
+                        success: function (dados) {
+
+                            if (dados == "ok") {
+
+                                swal({
+                                    title: 'Exclusão',
+                                    text: 'Exclusão efetuado com sucesso!!',
+                                    timer: 3000,
+                                    type: 'success',
+                                    showConfirmButton: false
+                                });
+
+                                CarregarProdutos();
+
+                            } else {
+                                swal("Erro", "Erro ao excluir!!", "error");
+                            }
+
+                        }
+                    });
+                } else {
+                    swal("Cancelado", "Exclusão cancelada pelo usuário", "error");
+                }
+            }
+        );
+    }
+
+    
+
+   
+</script>

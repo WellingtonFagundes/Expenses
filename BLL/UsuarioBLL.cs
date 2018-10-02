@@ -23,6 +23,45 @@ namespace BLL
             db = new Contexto();
         }
 
+        public void ChecarUserAdm()
+        {
+            PerfilDAL perDAL = new PerfilDAL(db);
+            MLL.Perfil perfil = new Perfil();
+            perfil = perDAL.Tudo()
+                                .Where(p => p.Nome_Perfil == "Administrador")
+                                .OrderBy(p => p.Nome_Perfil).FirstOrDefault();
+
+            if (perfil != null)
+            {
+                UsuarioDAL usuDAL = new UsuarioDAL(db);
+                MLL.Usuario userCurrent = usuDAL.Tudo()
+                                          .Where(u => u.Codigo_Perfil == perfil.Codigo_Perfil)
+                                          .FirstOrDefault();
+
+                if (userCurrent == null)
+                {
+                    MLL.Usuario usuario = new Usuario();
+
+                    usuario.Nome_Usuario = "Wellington Fagundes";
+                    usuario.Cargo = "Programador";
+                    usuario.Email = "wellington.fag@gmail.com";
+                    //Acertar o caminho do arquivo
+                    usuario.Path_Image = "C:\\expenses";
+
+                    MD5Crypt md5 = new MD5Crypt();
+                    usuario.Senha = md5.Criptografar(usuario.Email + ";" + "Wsf123@");
+                    usuario.Codigo_Perfil = perfil.Codigo_Perfil;
+                    usuario.Excluido = null;
+
+                    usuDAL.Adicionar(usuario);
+
+                }
+            }
+
+
+        }
+
+
         public bool Login(Usuario usuario)
         {
             //JObject obj = new JObject();
@@ -99,16 +138,7 @@ namespace BLL
 
             usu.Path_Image = pathSalvarNaBase;
 
-            if (form["chkAdministrador"] == "on")
-            {
-                usu.Administrador = true;
-            }
-            else if (form["chkAdministrador"] == null)
-            {
-                usu.Administrador = false;
-            }
-
-
+            
             //Criptografar Senha
             MD5Crypt cript = new MD5Crypt();
             usu.Senha = cript.Criptografar(usu.Email + ";" + usu.Senha);

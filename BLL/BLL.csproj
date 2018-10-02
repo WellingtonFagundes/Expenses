@@ -62,8 +62,10 @@
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="FormasPagamentoBLL.cs" />
     <Compile Include="PerfilBLL.cs" />
+    <Compile Include="ProdutoBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReceitaBLL.cs" />
+    <Compile Include="RegrasBLL.cs" />
     <Compile Include="UsuarioBLL.cs" />
     <Compile Include="VigenciaBLL.cs" />
   </ItemGroup>

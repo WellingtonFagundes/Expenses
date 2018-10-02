@@ -14,26 +14,14 @@ namespace MLL
         public int Codigo_Compra { get; set; }
 
         [Required()]
-        [DisplayName("Descrição")]
-        public string Descricao_Compra { get; set; }
-
-        [Required()]
-        [DisplayName("Valor")]
-        public decimal Valor_Compra { get; set; }
-
-        [Required()]
         [DisplayName("Status")]
         public Status Status { get; set; }
         
-        [Required()]
-        [DisplayName("URL")]
-        public string URL { get; set; }
-
-        public string Path_Image { get; set; }
-        public string Arquivo_Image { get; set; }
-
         public int Codigo_Usuario { get; set; }
         public virtual Usuario Usuario { get; set; }
+
+        public int Codigo_Prod { get; set; }
+        public virtual Produto Produto { get; set; }
 
         [NotMapped()]
         public string CodigoCript { get; set; }

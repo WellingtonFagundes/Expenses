@@ -16,17 +16,17 @@ namespace DAL.Mapeamento
             HasKey(x => x.Codigo_Compra);
 
             Property(x => x.Codigo_Compra).HasColumnName("COF_CODIGO");
-            Property(x => x.Descricao_Compra).HasColumnName("COF_DESCRICAO");
-            Property(x => x.Valor_Compra).HasColumnName("COF_VALOR");
             Property(x => x.Status).HasColumnName("COF_STATUS");
-            Property(x => x.URL).HasColumnName("COF_URL");
-            Property(x => x.Path_Image).HasColumnName("COF_PATHIMAGE");
-            Property(x => x.Arquivo_Image).HasColumnName("COF_ARQUIVOIMAGE");
             Property(x => x.Codigo_Usuario).HasColumnName("COF_USUCODIGO");
+            Property(X => X.Codigo_Prod).HasColumnName("COF_PROCODIGO");
 
             HasRequired(x => x.Usuario)
                 .WithMany()
                 .HasForeignKey(y => y.Codigo_Usuario);
+
+            HasRequired(x => x.Produto)
+               .WithMany()
+               .HasForeignKey(y => y.Codigo_Prod);
         }
     }
 }

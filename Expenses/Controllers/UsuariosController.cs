@@ -92,15 +92,7 @@ namespace Expenses.Controllers
 
             UsuarioBLL usuBLL = new UsuarioBLL();
 
-           //Checagem da checkbox de Administrador
-           if (form["chkAdministrador"] == "on")
-            {
-                usu.Administrador = true;
-            }else if (form["chkAdministrador"] == null)
-            {
-                usu.Administrador = false;
-            }
-
+           
             //Checagem de upload do arquivo (FOTO)
             HttpPostedFileBase arquivo = null;
             if (Request.Files.Count > 1)

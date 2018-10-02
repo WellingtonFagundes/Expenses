@@ -22,7 +22,10 @@
     @Styles.Render("~/Content/css/custom/custom.css")
     <!-- INCLUDED PLUGIN CSS ON THIS PAGE -->
     @Styles.Render("~/Content/vendors/perfect-scrollbar/perfect-scrollbar.css")
-    @Styles.Render("~/Content/vendors/data-tables/css/jquery.dataTables.min.css")
+    @*Styles.Render("~/Content/vendors/data-tables/css/jquery.dataTables.min.css")*@
+    @Styles.Render("https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css")
+    @Styles.Render("https://cdn.datatables.net/select/1.2.7/css/select.dataTables.min.css")
+
     @Styles.Render("~/Content/vendors/jvectormap/jquery-jvectormap.css")
     @Styles.Render("~/Content/vendors/flag-icon/css/flag-icon.min.css")
 
@@ -36,14 +39,15 @@
 
     <!-- para controle de tabs -->
     @Styles.Render("~/Content/css/easy-responsive-tabs.css")
-    
-    <!--Scripts--> 
+
+    <!--Scripts-->
     <!--================================================ -->
-    @RenderSection("scripts",required: false)
+    @RenderSection("scripts", required: false)
 
     <!-- jQuery Library -->
-    @Scripts.Render("~/Scripts/jquery-3.2.1.min.js")
-    
+    @*Scripts.Render("~/Scripts/jquery-3.2.1.min.js")*@
+    @Scripts.Render("~/Scripts/jquery-3.3.1.min.js")
+
     @Scripts.Render("~/Scripts/jquery.validate.min.js")
     @Scripts.Render("~/Scripts/jquery.validate.unobtrusive.min.js")
 
@@ -59,7 +63,9 @@
     <!-- para tabs -->
     @Scripts.Render("~/Scripts/js/easyResponsiveTabs.js")
 
-    
+    <!-- Para exibir checkbox na grid datatable-->
+    @Scripts.Render("https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js")
+    @Scripts.Render("https://cdn.datatables.net/select/1.2.7/js/dataTables.select.min.js")
 
     <!-- Para ajaxform e progress bar-->
     @Scripts.Render("http://malsup.github.com/jquery.form.js")
@@ -72,10 +78,12 @@
         body {
             background: #fff;
         }
+
         #container {
             width: 940px;
             margin: 0 auto;
         }
+
         @@media only screen and (max-width: 768px) {
             #container {
                 width: 90%;
@@ -84,7 +92,7 @@
         }
     </style>
 
-    
+
 </head>
 <body class="loaded" style="">
     <!-- Start Page Loading -->

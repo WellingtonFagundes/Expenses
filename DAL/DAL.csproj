@@ -53,9 +53,12 @@
     <Compile Include="Consulta\DespesaDAL.cs" />
     <Compile Include="Consulta\FormaPagamentoDAL.cs" />
     <Compile Include="Consulta\PerfilDAL.cs" />
+    <Compile Include="Consulta\ProdutoDAL.cs" />
     <Compile Include="Consulta\ReceitaDAL.cs" />
+    <Compile Include="Consulta\RegrasDAL.cs" />
     <Compile Include="Consulta\Repositorio.cs" />
     <Compile Include="Consulta\UsuarioDAL.cs" />
+    <Compile Include="Consulta\UsuariosRegrasDAL.cs" />
     <Compile Include="Consulta\VigenciaDAL.cs" />
     <Compile Include="Contexto.cs" />
     <Compile Include="Mapeamento\CartaoCreditoMap.cs" />
@@ -63,8 +66,11 @@
     <Compile Include="Mapeamento\DespesaMap.cs" />
     <Compile Include="Mapeamento\FormaPagamentoMap.cs" />
     <Compile Include="Mapeamento\PerfilMap.cs" />
+    <Compile Include="Mapeamento\ProdutoMap.cs" />
     <Compile Include="Mapeamento\ReceitaMap.cs" />
+    <Compile Include="Mapeamento\RegrasMap.cs" />
     <Compile Include="Mapeamento\UsuarioMap.cs" />
+    <Compile Include="Mapeamento\UsuariosRegrasMap.cs" />
     <Compile Include="Mapeamento\VigenciaMap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

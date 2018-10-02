@@ -21,7 +21,6 @@ namespace DAL.Mapeamento
             Property(x => x.Senha).HasColumnName("USU_SENHA");
             Property(x => x.Cargo).HasColumnName("USU_CARGO");
             Property(x => x.Excluido).HasColumnName("USU_EXCLUIDO");
-            Property(x => x.Administrador).HasColumnName("USU_ADMINISTRADOR");
             Property(x => x.Codigo_Perfil).HasColumnName("USU_PERCODIGO");
             Property(x => x.Path_Image).HasColumnName("USU_PATHIMAGE");
 

@@ -14,6 +14,16 @@ namespace Expenses.Controllers
         // GET: Login
         public ActionResult Index()
         {
+            //Cria perfil de Administrador na primeira carga do sistema
+            PerfilBLL perBLL = new PerfilBLL();
+            if (perBLL.ChecarPerfilAdmin() == true)
+            {
+                //Cria usuário coligado ao administrador na primeira carga do sistema
+                UsuarioBLL usuBLL = new UsuarioBLL();
+                usuBLL.ChecarUserAdm();
+            }
+
+            
             return View();
         }
 
@@ -68,16 +78,19 @@ namespace Expenses.Controllers
             {
                 if (arquivo != null && arquivo.ContentLength > 0)
                 {
-                    var path = Path.Combine("C:/Compras_Imagens/", Path.GetFileName(arquivo.FileName));
+                    var uploadPath = @"~\images\Arquivos_Expenses\Usuarios\";
+                    var pathRelativo = @"\images\Arquivos_Expenses\Usuarios\";
+                    string caminhoarquivofull = Path.Combine(Server.MapPath(@uploadPath + Path.GetFileName(arquivo.FileName)));
 
-                    arquivo.SaveAs(path);
+                    var path = "http:\\EXPENSES" + pathRelativo + arquivo.FileName;
+
+                    arquivo.SaveAs(caminhoarquivofull);
 
                     usu.Path_Image = path;
                 }
             }
 
-            usu.Administrador = false;
-
+            
             UsuarioBLL usuBLL = new UsuarioBLL();
 
             return usuBLL.InsereUsuario(usu).ToString();

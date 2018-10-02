@@ -34,22 +34,6 @@
                             </div>
 
                             <div class="col s12">
-
-                                <!-- Switch Administrador -->
-                                <label>Administrador</label>
-                                <div class="switch">
-                                    <label>
-                                        Não
-                                        <input type="checkbox" id="chkAdministrador" name="chkAdministrador" class="validate" @(Model.Administrador == true ? "checked" : "")>
-                                        <span class="lever"></span>
-                                        Sim
-                                    </label>
-                                    <span class="field-validation-valid help-block position-absolute" data-valmsg-replace="true" data-valmsg-for="chkAdministrador"></span>
-                                </div>
-
-                            </div>
-
-                            <div class="col s12">
                                 @Html.LabelFor(u => u.Perfil.Nome_Perfil, new { @class = "validate" })
                                 @Html.DropDownListFor(u => u.Codigo_Perfil, (List<SelectListItem>)ViewBag.listaPerfis, "-- Selecione o Perfil --", new { @class = "validate", @autofocus = "true" })
                                 @Html.ValidationMessageFor(u => u.Codigo_Perfil, null, new { @class = "help-block position-absolute" })

@@ -45,6 +45,9 @@ namespace DAL
         public DbSet<Receita> Receita { get; set; }
         public DbSet<Usuario> Usuario { get; set; }
         public DbSet<Vigencia> Vigencia { get; set; }
+        public DbSet<Regras> Regras { get; set; }
+        public DbSet<UsuariosRegras> UsuariosRegras { get; set; }
+        public DbSet<Produto> Produtos { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -56,7 +59,9 @@ namespace DAL
             modelBuilder.Configurations.Add(new ReceitaMap());
             modelBuilder.Configurations.Add(new UsuarioMap());
             modelBuilder.Configurations.Add(new VigenciaMap());
-
+            modelBuilder.Configurations.Add(new RegrasMap());
+            modelBuilder.Configurations.Add(new UsuariosRegrasMap());
+            modelBuilder.Configurations.Add(new ProdutoMap());
 
             //1 x N (FORMA PAGAMENTO X DESPESA)
             modelBuilder.Entity<MLL.FormaPagamento>()
@@ -98,6 +103,26 @@ namespace DAL
                 .WithRequired(y => y.Usuario)
                 .HasForeignKey(y => y.Codigo_Usuario);
 
+
+            //1 X N (USUARIOS x USUARIOSREGRAS)
+            modelBuilder.Entity<MLL.Usuario>()
+                .HasMany(x => x.UsuariosRegras)
+                .WithRequired(y => y.Usuario)
+                .HasForeignKey(y => y.Codigo_Usuario);
+
+            //1 X N (USUARIOS x PRODUTOS)
+            modelBuilder.Entity<MLL.Usuario>()
+                .HasMany(x => x.Produtos)
+                .WithRequired(y => y.Usuario)
+                .HasForeignKey(y => y.Codigo_Usuario);
+
+            //1 X N (REGRAS x USUARIOSREGRAS)
+            modelBuilder.Entity<MLL.Regras>()
+                .HasMany(x => x.UsuariosRegras)
+                .WithRequired(y => y.Regra)
+                .HasForeignKey(y => y.Codigo_Regra);
+                
+
             //1 x N (VIGENCIA X CARTAO CREDITO)
             modelBuilder.Entity<MLL.Vigencia>()
                 .HasMany(x => x.CartoesCredito)
@@ -123,7 +148,17 @@ namespace DAL
                 .WithRequired(y => y.Perfil)
                 .HasForeignKey(y => y.Codigo_Perfil);
 
+            //1 x N (PRODUTO x COMPRASFUTURAS)
+            modelBuilder.Entity<MLL.Produto>()
+                .HasMany(x => x.ComprasFuturas)
+                .WithRequired(y => y.Produto)
+                .HasForeignKey(y => y.Codigo_Prod);
 
+            //1 x N (PRODUTO x DESPESAS)
+            modelBuilder.Entity<MLL.Produto>()
+                .HasMany(x => x.Despesas)
+                .WithRequired(y => y.Produto)
+                .HasForeignKey(y => y.Codigo_Produto);
         }
 
 

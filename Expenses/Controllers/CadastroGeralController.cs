@@ -157,27 +157,12 @@ namespace Expenses.Controllers
         } 
 
         [HttpPost]
-        public string FileUploadImagem()
-        {
-            HttpPostedFileBase arquivo = Request.Files["file"];
-
-            int codigocompra = Convert.ToInt32(Request.Form["idCompra"]);
-
-            ComprasFuturasBLL comBLL = new ComprasFuturasBLL();
-
-            var uploadPath = @"~\images\Arquivos_Expenses\";
-            var pathRelative = @"\images\Arquivos_Expenses\";
-            string caminhoarquivo = Path.Combine(Server.MapPath(@uploadPath + Path.GetFileName(arquivo.FileName)));
-            
-            return comBLL.SalvarUploadCompraImagem(arquivo, codigocompra, arquivo.FileName,caminhoarquivo,pathRelative).ToString();
-        }
-
-        [HttpPost]
-        public string BuscarCaminhoImagem(int codCompra)
+        public string ObterProdutosNaCompraDeUsuario()
         {
             ComprasFuturasBLL comBLL = new ComprasFuturasBLL();
-            
-            return comBLL.BuscarCaminhoImagem(codCompra).ToString();
+
+            return comBLL.ObterProdutosNaCompraDeUsuario(Convert.ToInt32(Session["usuariologadoId"])).ToString();
         }
+
     }
 }

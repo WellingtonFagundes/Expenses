@@ -29,7 +29,7 @@ namespace BLL
             CompraFuturaDAL comfDAL = new CompraFuturaDAL(db);
 
             IList<MLL.CompraFutura> lista = comfDAL.Tudo()
-                                                   .OrderBy(c => c.Descricao_Compra)
+                                                   .OrderBy(c => c.Codigo_Compra)
                                                    .Where(c => c.Codigo_Usuario == codusu)
                                                    .ToList();
 
@@ -37,12 +37,13 @@ namespace BLL
             {
                 arr.Add(new JObject(
                         new JProperty("Codigo_Compra", com.Codigo_Compra),
-                        new JProperty("Descricao_Compra", com.Descricao_Compra),
-                        new JProperty("Valor_Compra", com.Valor_Compra),
+                        new JProperty("Desc_Prod", com.Produto.Descricao_Produto),
+                        new JProperty("Val_Prod", com.Produto.Valor_Produto),
                         new JProperty("Status", com.Status.Description()),
-                        new JProperty("URL", com.URL),
+                        new JProperty("URL", com.Produto.Url),
                         new JProperty("Codigo_Usuario", com.Codigo_Usuario),
-                        new JProperty("Path_Image", com.Path_Image)
+                        new JProperty("Cod_Prod", com.Codigo_Prod),
+                        new JProperty("Path_Image", com.Produto.Path_Image)
                         
                         ));
             }
@@ -59,19 +60,18 @@ namespace BLL
 
             CompraFuturaDAL compraDAL = new CompraFuturaDAL(db);
 
-            string descricaocompra = arrcompra[0].Value<string>("Descricao_Compra").ToString();
-            string valorcompra = arrcompra[0].Value<decimal>("Valor_Compra").ToString();
+            string descricaocompra = arrcompra[0].Value<string>("Desc_Prod").ToString();
+            string valorcompra = arrcompra[0].Value<decimal>("Val_Prod").ToString();
             string status = arrcompra[0].Value<int>("Status").ToString();
             string url = arrcompra[0].Value<string>("URL").ToString();
             string codigousuario = arrcompra[0].Value<int>("Codigo_Usuario").ToString();
+            string codigoproduto = arrcompra[0].Value<int?>("Cod_Prod").ToString();
 
             MLL.CompraFutura compra = new MLL.CompraFutura
             {
-                Descricao_Compra = descricaocompra,
-                Valor_Compra = Convert.ToDecimal(valorcompra),
                 Status = (MLL.Status)Convert.ToInt32(status),
-                URL = url,
-                Codigo_Usuario = Convert.ToInt32(codigousuario)
+                Codigo_Usuario = Convert.ToInt32(codigousuario),
+                Codigo_Prod = Convert.ToInt32(codigoproduto)
             };
 
             if (compraDAL.Adicionar(compra))
@@ -120,11 +120,12 @@ namespace BLL
             {
                 arr.Add(new JObject(
                         new JProperty("Codigo_Compra", compra.Codigo_Compra),
-                        new JProperty("Descricao_Compra",compra.Descricao_Compra),
-                        new JProperty("Valor_Compra",compra.Valor_Compra),
+                        new JProperty("Desc_Prod",compra.Produto.Descricao_Produto),
+                        new JProperty("Val_Prod",compra.Produto.Valor_Produto),
                         new JProperty("Status",compra.Status),
-                        new JProperty("URL",compra.URL),
-                        new JProperty("Codigo_Usuario",compra.Codigo_Usuario)
+                        new JProperty("URL",compra.Produto.Url),
+                        new JProperty("Codigo_Usuario",compra.Codigo_Usuario),
+                        new JProperty("Cod_Prod",compra.Codigo_Prod)
                         ));
             }
 
@@ -133,26 +134,50 @@ namespace BLL
             return obj;
         }
 
+        public JObject ObterProdutosNaCompraDeUsuario(int codUser)
+        {
+            JObject obj = new JObject();
+            JArray arr = new JArray();
+            ProdutoDAL proDAL = new ProdutoDAL(db);
+
+            IList<MLL.Produto> produtos = proDAL.Tudo()
+                                                .Where(p => p.Codigo_Usuario == codUser)
+                                                .OrderBy(p => p.Codigo_Produto)
+                                                .ToList();
+
+            foreach(var pro in produtos)
+            {
+                arr.Add(new JObject(
+                            new JProperty("Codigo_Produto", pro.Codigo_Produto),
+                            new JProperty("Descricao_Produto",pro.Descricao_Produto),
+                            new JProperty("Valor_Produto",pro.Valor_Produto),
+                            new JProperty("Url",pro.Url)
+                            
+                            ));
+            }
+
+            obj.Add(new JProperty("listaProdutos",arr));
+
+            return obj;
+        }
+
+
         public JObject EditarCompraFutura(string objcompra)
         {
             JObject obj = new JObject();
             JArray arrCompra = JArray.Parse(objcompra);
 
             string codigocompra = arrCompra[0].Value<int>("Codigo_Compra").ToString();
-            string descricaocompra = arrCompra[0].Value<string>("Descricao_Compra").ToString();
-            string valorcompra = arrCompra[0].Value<decimal>("Valor_Compra").ToString();
+            string codigoproduto = arrCompra[0].Value<int?>("Cod_Prod").ToString();
             string status = arrCompra[0].Value<int>("Status").ToString();
-            string url = arrCompra[0].Value<string>("URL").ToString();
             string codigousuario = arrCompra[0].Value<int>("Codigo_Usuario").ToString();
 
 
             MLL.CompraFutura compra = new MLL.CompraFutura
             {
                 Codigo_Compra = Convert.ToInt32(codigocompra),
-                Descricao_Compra = descricaocompra,
-                Valor_Compra = Convert.ToDecimal(valorcompra),
+                Codigo_Prod = Convert.ToInt32(codigoproduto),
                 Status = (MLL.Status)Convert.ToInt32(status),
-                URL = url,
                 Codigo_Usuario = Convert.ToInt32(codigousuario)
             };
 
@@ -189,72 +214,9 @@ namespace BLL
             return result;
         }
 
-        public JObject SalvarUploadCompraImagem(HttpPostedFileBase arquivo, int idCompra, string nomearquivoextensao,string caminhoFull,string caminhoRelativo)
-        {
-            JObject obj = new JObject();
-
-            try
-            {
-                //Apontando para abrir o arquivo de acordo com o servidor web
-                var pathSalvarNaBase = Path.Combine("http:\\EXPENSES" + caminhoRelativo + nomearquivoextensao);
-
-                arquivo.SaveAs(caminhoFull);
-
-                //Rotina para atualizar o id da compra selecionado com o caminho do arquivo de imagem
-                CompraFuturaDAL comDAL = new CompraFuturaDAL(db);
-                MLL.CompraFutura compra = comDAL.obtemPorId(idCompra);
-
-                compra.Path_Image = pathSalvarNaBase;
-                compra.Arquivo_Image = nomearquivoextensao;
-
-                if (comDAL.Editar(compra))
-                {
-                    obj.Add(new JProperty("ok", caminhoFull));
-                }
-                else
-                {
-                    obj.Add(new JProperty("erro", comDAL.erro));
-                }
-
-            }
-            catch (Exception ex)
-            {
-                obj.Add(new JProperty("erro", ex.Message));
-                return obj;
-            }
-
-            return obj;
-        }
+       
 
 
-        public JObject BuscarCaminhoImagem(int id)
-        {
-            var caminho = "";
-            JObject obj = new JObject();
-            JArray arr = new JArray();
-
-            CompraFuturaDAL comDAL = new CompraFuturaDAL(db);
-
-            MLL.CompraFutura compra = comDAL.obtemPorId(id);
-
-            if (!object.Equals(compra, null)) { 
-                caminho = compra.Path_Image;
-
-                arr.Add(new JObject(
-                        new JProperty("Caminho_Imagem", caminho))
-                        );
-            }
-
-            if (caminho != null)
-            {
-                obj.Add(new JProperty("listaCaminho", arr));
-            }
-            else
-            {
-                obj.Add(new JProperty("vazio", "vazio"));
-            }
-
-            return obj;
-        }
+      
     }
 }

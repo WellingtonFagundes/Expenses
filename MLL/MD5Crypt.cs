@@ -11,6 +11,12 @@ namespace MLL
 
         public string Criptografar(string message)
         {
+            /*
+            MD5 md5Hash = MD5.Create();
+            // Converter a String para array de bytes, que é como a biblioteca trabalha.
+            byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(message));
+            */
+            
             byte[] Results;
             System.Text.UTF8Encoding UTF8 = new System.Text.UTF8Encoding();
             MD5CryptoServiceProvider HashProvider = new MD5CryptoServiceProvider();
@@ -30,7 +36,9 @@ namespace MLL
                 TDESAlgorithm.Clear();
                 HashProvider.Clear();
             }
+            
             return Convert.ToBase64String(Results);
+            
         }
 
         public string Descriptografar(string Message)

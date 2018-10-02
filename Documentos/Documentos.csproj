@@ -340,6 +340,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="43930221-materialize-material-design-admin-template-license.txt" />
+    <Content Include="Exemplo de controle usuários permissões e claims.png" />
     <Content Include="Materialize - Material Design Admin Template-4.0\documentation\404.html" />
     <Content Include="Materialize - Material Design Admin Template-4.0\documentation\about.html" />
     <Content Include="Materialize - Material Design Admin Template-4.0\documentation\badges.html" />
@@ -2559,6 +2560,7 @@
     <Content Include="Materialize - Material Design Admin Template-4.0\starter-kit\vendors\perfect-scrollbar\perfect-scrollbar.css" />
     <Content Include="Materialize - Material Design Admin Template-4.0\starter-kit\vendors\perfect-scrollbar\perfect-scrollbar.min.js" />
     <Content Include="Pendências do sistema atuais.txt" />
+    <Content Include="Propriedades da tabela TB_PERFIL.png" />
     <Content Include="ScriptSQL.SQL" />
     <Content Include="Tema utilizado Materialize.txt" />
   </ItemGroup>

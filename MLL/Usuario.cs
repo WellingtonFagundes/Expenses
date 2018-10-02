@@ -18,6 +18,8 @@ namespace MLL
             Despesas = new HashSet<Despesa>();
             ComprasFuturas = new HashSet<CompraFutura>();
             Vigencias = new HashSet<Vigencia>();
+            Produtos = new HashSet<Produto>();
+            UsuariosRegras = new HashSet<UsuariosRegras>();
         }
 
         public int Codigo_Usuario { get; set; }
@@ -51,8 +53,6 @@ namespace MLL
 
         public DateTime? Excluido { get; set; }
 
-        public bool Administrador { get; set; }
-
         public string Path_Image { get; set; }
 
         public int Codigo_Perfil { get; set; }
@@ -62,8 +62,9 @@ namespace MLL
         public virtual ICollection<Receita> Receitas { get; set; }
         public virtual ICollection<Despesa> Despesas { get; set; }
         public virtual ICollection<CompraFutura> ComprasFuturas { get; set; }
-
         public virtual ICollection<Vigencia> Vigencias { get; set; }
+        public virtual ICollection<Produto> Produtos { get; set; }
+        public virtual ICollection<UsuariosRegras> UsuariosRegras { get; set; }
 
         [NotMapped()]
         public string idcriptografado { get; set; }

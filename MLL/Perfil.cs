@@ -23,8 +23,6 @@ namespace MLL
         [DisplayName("Nome Perfil")]
         public string Nome_Perfil { get; set; }
 
-        public bool Diferenciado { get; set; }
-
         public virtual ICollection<Usuario> Usuarios { get; set; }
 
         [NotMapped()]

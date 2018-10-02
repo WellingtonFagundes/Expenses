@@ -19,11 +19,63 @@ namespace BLL
             db = new Contexto();
         }
 
+        public bool ExibirMenuPerfilAdm(string email)
+        {
+            UsuarioDAL usuDAL = new UsuarioDAL(db);
+
+            MLL.Usuario usuPerfilAdm = usuDAL.Tudo()
+                                             .Where(u => u.Email == email)
+                                             .OrderBy(u => u.Nome_Usuario).FirstOrDefault();
+  
+            if ((usuPerfilAdm != null) && (usuPerfilAdm.Perfil.Nome_Perfil == "Administrador"))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+        public bool ChecarPerfilAdmin()
+        {
+            PerfilDAL perDAL = new PerfilDAL(db);
+
+            MLL.Perfil perAdmin = perDAL.Tudo()
+                                        .Where(p => p.Nome_Perfil == "Administrador")
+                                        .OrderBy(p => p.Nome_Perfil).FirstOrDefault();
+
+            if (perAdmin == null)
+            {
+                MLL.Perfil perfil = new MLL.Perfil();
+
+                perfil.Nome_Perfil = "Administrador";
+                
+                if (perDAL.Adicionar(perfil) == true)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+
+
+        }
+
        public List<SelectListItem> ObterListaPerfil()
         {
             PerfilDAL perDAL = new PerfilDAL(db);
 
-            IList<MLL.Perfil> listaPer = perDAL.Tudo().OrderBy(p => p.Nome_Perfil).ToList();
+            IList<MLL.Perfil> listaPer = perDAL.Tudo()
+                                               .Where(p => p.Nome_Perfil != "Administrador")
+                                               .OrderBy(p => p.Nome_Perfil).ToList();
 
             List<SelectListItem> lista = new List<SelectListItem>();
             
@@ -52,14 +104,6 @@ namespace BLL
         public JObject CadastrarPerfil(MLL.Perfil perfil,FormCollection form)
         {
             JObject obj = new JObject();
-
-            if (form["chkDiferenciado"] == "on")
-            {
-                perfil.Diferenciado = true;
-            }else if (form["chkDiferenciado"] == null)
-            {
-                perfil.Diferenciado = false;
-            }
 
             PerfilDAL perDAL = new PerfilDAL(db);
 
@@ -103,14 +147,7 @@ namespace BLL
         {
             JObject obj = new JObject();
             PerfilDAL perDAL = new PerfilDAL(db);
-            
-            if (form["chkDiferenciado"] == "on")
-            {
-                perfil.Diferenciado = true;
-            }else if (form["chkDiferenciado"] == null)
-            {
-                perfil.Diferenciado = false;
-            }
+          
 
             if (perDAL.Editar(perfil) == true)
             {

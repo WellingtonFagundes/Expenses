@@ -34,6 +34,9 @@ namespace MLL
         public int Codigo_Vigencia { get; set; }
         public virtual Vigencia Vigencia { get; set; }
 
+        public int Codigo_Produto { get; set; }
+        public virtual Produto Produto { get; set; }
+
         [NotMapped()]
         public string CodigoCript { get; set; }
     }
